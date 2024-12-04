@@ -25,9 +25,11 @@ so to set up you can just
   ./setup_bash_script.bash
 ```
 if you get a migration problem you may want to get a look at your db configuration
+```bash
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=laravel
 DB_USERNAME=<some username>
 DB_PASSWORD=<some password>
+```
