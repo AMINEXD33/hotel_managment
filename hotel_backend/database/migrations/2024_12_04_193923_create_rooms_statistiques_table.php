@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('rooms_statistiques', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('id_hotel');
+            $table->unsignedBigInteger('id_room');
+            $table->foreign('id_hotel')->references('id')->on('hotels')->onDelete('cascade');
+            $table->foreign('id_room')->references('id')->on('rooms')->onDelete('cascade');
+            $table->integer('total_reservations')->default(0);
+            $table->float('avg_stars')->default(0.00);
+            $table->float('min_stars')->default(0.00);
+            $table->float('max_stars')->default(0.00);
             $table->timestamps();
         });
     }
