@@ -31,6 +31,9 @@ else
 fi
 
 
+#publish the configuration for sanctum
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+
 # migrate database
 if ! php artisan migrate; then
     echo "\e[31m[-] can't migrate using php artisan migrate !\e[0m"
