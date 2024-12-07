@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class rooms extends Model
+class Rooms_photos extends Model
 {
-    /** @use HasFactory<\Database\Factories\RoomsFactory> */
+    /** @use HasFactory<\Database\Factories\RoomsPhotosFactory> */
     use HasFactory;
 }
