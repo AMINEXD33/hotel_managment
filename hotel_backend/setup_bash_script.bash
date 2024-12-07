@@ -30,15 +30,13 @@ else
     echo "\e[32m[+] encryption key is generated ! !\e[0m"
 fi
 
-<<<<<<< HEAD
 
 #publish the configuration for sanctum
 php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
 
-=======
 #set up the authentication package used to auth with the api
 php artisan install:api
->>>>>>> confAuth
+
 # migrate database
 if ! php artisan migrate; then
     echo "\e[31m[-] can't migrate using php artisan migrate !\e[0m"
