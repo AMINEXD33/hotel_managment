@@ -8,5 +8,6 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::get('/users', [ClientsController::class, 'getClients'])->middleware('auth:sanctum');;
+Route::get('/users', [ClientsController::class, 'getClients'])->middleware('auth:sanctum');
 Route::post('/login', [ClientsController::class, 'login']);
+Route::get('/logout', [ClientsController::class, 'logout']);

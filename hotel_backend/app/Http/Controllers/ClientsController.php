@@ -8,7 +8,7 @@ use App\Models\clients;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Auth;
 class ClientsController extends Controller
 {
 
@@ -21,26 +21,25 @@ class ClientsController extends Controller
 
 
     public function login(Request $request){
-        function hash_password($password){
-            return password_hash($password, PASSWORD_DEFAULT);
-        }
-        $validateUser = Validator::make(
-            $request->all(),
-            [
-                'email' => 'required|email',
-                'password' => 'required'
-            ]
-        );
-        if ($validateUser->fails()) {
-            return response()->json(["error"=>$validateUser->errors()]);
-        }
-        # GET THE USER WITH this account
-        $user = User::where("email", "=",$request->get("email"), "AND","password","=", hash_password($request->get("password")))->first();
-        if (!$user) {
-            return response()->json(["error"=>"ux0"]);
-        }
+        $credentials = $request->only('email', 'password');
 
-        return response()->json(["damn you email is "=>$user]);
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            $request->session()->regenerate();
+            return response()->json([
+                'response' => 'success',
+            ]);
+        }
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return response()->json(['message' => 'Logged out successfully']);
     }
     /**
      * Display a listing of the resource.
