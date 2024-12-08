@@ -31,7 +31,6 @@ class UserFactory extends Factory
             'photo' => fake()->image(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-
         ];
     }
 

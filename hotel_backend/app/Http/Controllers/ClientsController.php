@@ -11,11 +11,40 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 class ClientsController extends Controller
 {
+    /** a function to check if a user is admin
+     * @param User $user
+     * @return bool
+     */
+    private function isAdmin(User $user):bool{
+        if ($user->is_admin == 1){
+            return true;
+        }
+        return false;
+    }
 
-    public function getClients(Request $request)
+    /** a function to check if a user is a normal user
+     * @param User $user
+     * @return bool
+     */
+    private function isUser(User $user):bool{
+        if ($user->is_admin == 0){
+            return true;
+        }
+        return false;
+    }
+
+    public function getClients(Request $request, $auth="admins")
     {
+        $userId = auth()->id();
+        # we can add redis caching here
+        $user = User::query()->find($userId);
+        if ($this->isAdmin($user)){
+            return response()->json([
+                'clients' => ['amin', "asdas", "dfadfsdf"]
+            ]);
+        }
         return response()->json([
-            'clients' => ['amin', "asdas", "dfadfsdf"]
+            'permission_error' => ["You don't have permission to take this action"],
         ]);
     }
 
