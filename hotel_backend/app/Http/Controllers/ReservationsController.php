@@ -39,18 +39,18 @@ class ReservationsController extends Controller
         }catch(\Exception $exception){
             return response()->json([
                 'error' => "the query is not right",
-                'query'=>"CALL $procedure($expectedArgs)"
-            ]);
+            ], 500);
         }
 
 
         if (AuthorityCheckers::isAdmin($user)){
             return response()->json([
-                'reservations' => [$reservations]
+                'reservations' => [$reservations], 200
             ]);
         }
         return response()->json([
             'permission_error' => ["You don't have permission to take this action"],
+            400
         ]);
     }
 
@@ -63,10 +63,10 @@ class ReservationsController extends Controller
     public function getAllReservationsForHotel(Request $request): JsonResponse
     {
         $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
+        $hotel = $request_data->get("hotel_id");
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel was specified"],
+                'error' => ["no hotel_id was specified"],422
             ]);
         }
         return $this->reservationsAdminBasse($request, "allActiveReservationsInHotel", [$hotel]);
@@ -81,10 +81,11 @@ class ReservationsController extends Controller
     public function getAllOldReservationsForHotel(Request $request): JsonResponse
     {
         $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
+        $hotel = $request_data->get("hotel_id");
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel was specified"],
+                'error' => ["no hotel_id was specified"],
+                422
             ]);
         }
         return $this->reservationsAdminBasse($request, "allOldReservationsInHotel", [$hotel]);
@@ -98,11 +99,11 @@ class ReservationsController extends Controller
     public function getAllReservationsWithCheckInAfter(Request $request): JsonResponse
     {
         $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
+        $hotel = $request_data->get("hotel_id");
         $after = $request_data->get("after");
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel was specified"],
+                'error' => ["no hotel_id was specified"],422
             ]);
         }
         return $this->reservationsAdminBasse($request, "allReservationsWithCheckInAfter", [$hotel, $after]);
@@ -117,11 +118,11 @@ class ReservationsController extends Controller
     public function getAllReservationsWithCheckInBefore(Request $request): JsonResponse
     {
         $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
+        $hotel = $request_data->get("hotel_id");
         $before = $request_data->get("before");
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel was specified"],
+                'error' => ["no hotel_id was specified"],422
             ]);
         }
         return $this->reservationsAdminBasse($request, "allReservationsWithCheckInBefore", [$hotel, $before]);
@@ -136,12 +137,12 @@ class ReservationsController extends Controller
     public function getAllReservationsWithCheckInBetween(Request $request): JsonResponse
     {
         $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
+        $hotel = $request_data->get("hotel_id");
         $left = $request_data->get("left");
         $right = $request_data->get("right");
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel was specified"],
+                'error' => ["no hotel_id was specified"],422
             ]);
         }
         return $this->reservationsAdminBasse($request, "allReservationsWIthCheckInBetween", [$hotel, $left, $right]);
@@ -156,11 +157,11 @@ class ReservationsController extends Controller
     public function getAllReservationsWithCheckOutAfter(Request $request): JsonResponse
     {
         $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
+        $hotel = $request_data->get("hotel_id");
         $after = $request_data->get("after");
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel was specified"],
+                'error' => ["no hotel_id was specified"],422
             ]);
         }
         return $this->reservationsAdminBasse($request, "allReservationsWithCheckOutBetween", [$hotel, $after]);
@@ -175,11 +176,11 @@ class ReservationsController extends Controller
     public function getAllReservationsWithCheckOutBefore(Request $request): JsonResponse
     {
         $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
+        $hotel = $request_data->get("hotel_id");
         $before = $request_data->get("before");
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel was specified"],
+                'error' => ["no hotel_id was specified"],422
             ]);
         }
         return $this->reservationsAdminBasse($request, "allReservationsWithCheckOutBefore", [$hotel, $before]);
@@ -194,13 +195,13 @@ class ReservationsController extends Controller
     public function getAllReservationsWithCheckOutBetween(Request $request): JsonResponse
     {
         $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
+        $hotel = $request_data->get("hotel_id");
         $left = $request_data->get("left");
         $right = $request_data->get("right");
 
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel was specified"],
+                'error' => ["no hotel_id was specified"],422
             ]);
         }
         return $this->reservationsAdminBasse($request, "allReservationsWithCheckOutBetween", [$hotel, $left, $right]);

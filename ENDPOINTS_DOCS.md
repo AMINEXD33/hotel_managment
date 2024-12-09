@@ -7,20 +7,20 @@
 *need to be loggedin*
 - yes
 
-*Authority*
+- *Authority*
 - admins only
 
-*Input expected*
+- *Input expected*
 - hotel_id : the id of the target hotel
 
-*expected return*
+- *expected return*
 - 200 ['reservations':[{reservation1},{reservation2}....]] : if they exist
 - 200 [] : if they don't exist
 
-*unexpected return*
-- 404 ["error", "no hotel_id was specified] : if no id was provided
-
-
+- *unexpected return*
+- 422 ["error": "no hotel_id was specified"] : if no id was provided
+- 500 ["error":"the query is not right"] : if you passed some unholly params that i didn't think off
+- 400 ["permission_error":"You don't have permission to take this action"]: you're not logged in as an admin 
 ### **api/hotelOldReservation**
 #### An endpoint to get old reservations , note that an old reservation means an expired reservation.
 
@@ -38,8 +38,9 @@
 - 200 [] : if they don't exist
 
 *unexpected return*
-- 404 ["error", "no hotel_id was specified] : if no id was provided
-
+- 422 ["error": "no hotel_id was specified"] : if no id was provided
+- 500 ["error":"the query is not right"] : if you passed some unholly params that i didn't think off
+- 400 ["permission_error":"You don't have permission to take this action"]: you're not logged in as an admin 
 
 ### **api/hotelReservationsCheckinAfter**
 #### An endpoint to get reservations that have a checkin  date that comes after a specified date.
@@ -59,7 +60,9 @@
 - 200 [] : if they don't exist
 
 *unexpected return*
-- 404 ["error", "no hotel_id was specified] : if no id was provided
+- 422 ["error": "no hotel_id was specified"] : if no id was provided
+- 500 ["error":"the query is not right"] : if you passed some unholly params that i didn't think off
+- 400 ["permission_error":"You don't have permission to take this action"]: you're not logged in as an admin 
 
 NOTE : no further errors should pop up since the mysql is handling the if the dates needed are not passed
 
@@ -83,7 +86,9 @@ NOTE : no further errors should pop up since the mysql is handling the if the da
 - 200 [] : if they don't exist
 
 *unexpected return*
-- 404 ["error", "no hotel_id was specified] : if no id was provided
+- 422 ["error": "no hotel_id was specified"] : if no id was provided
+- 500 ["error":"the query is not right"] : if you passed some unholly params that i didn't think off
+- 400 ["permission_error":"You don't have permission to take this action"]: you're not logged in as an admin 
 
 NOTE : no further errors should pop up since the mysql is handling the if the dates needed are not passed
 
@@ -106,7 +111,9 @@ NOTE : no further errors should pop up since the mysql is handling the if the da
 - 200 [] : if they don't exist
 
 *unexpected return*
-- 404 ["error", "no hotel_id was specified] : if no id was provided
+- 422 ["error": "no hotel_id was specified"] : if no id was provided
+- 500 ["error":"the query is not right"] : if you passed some unholly params that i didn't think off
+- 400 ["permission_error":"You don't have permission to take this action"]: you're not logged in as an admin 
 
 NOTE : no further errors should pop up since the mysql is handling the if the dates needed are not passed
 
@@ -129,7 +136,9 @@ NOTE : no further errors should pop up since the mysql is handling the if the da
 - 200 [] : if they don't exist
 
 *unexpected return*
-- 404 ["error", "no hotel_id was specified] : if no id was provided
+- 422 ["error": "no hotel_id was specified"] : if no id was provided
+- 500 ["error":"the query is not right"] : if you passed some unholly params that i didn't think off
+- 400 ["permission_error":"You don't have permission to take this action"]: you're not logged in as an admin 
 
 NOTE : no further errors should pop up since the mysql is handling the if the dates needed are not passed
 
@@ -153,7 +162,9 @@ NOTE : no further errors should pop up since the mysql is handling the if the da
 - 200 [] : if they don't exist
 
 *unexpected return*
-- 404 ["error", "no hotel_id was specified] : if no id was provided
+- 422 ["error": "no hotel_id was specified"] : if no id was provided
+- 500 ["error":"the query is not right"] : if you passed some unholly params that i didn't think off
+- 400 ["permission_error":"You don't have permission to take this action"]: you're not logged in as an admin 
 
 NOTE : no further errors should pop up since the mysql is handling the if the dates needed are not passed
 
@@ -176,6 +187,8 @@ NOTE : no further errors should pop up since the mysql is handling the if the da
 - 200 [] : if they don't exist
 
 *unexpected return*
-- 404 ["error", "no hotel_id was specified] : if no id was provided
+- 422 ["error": "no hotel_id was specified"] : if no id was provided
+- 500 ["error":"the query is not right"] : if you passed some unholly params that i didn't think off
+- 400 ["permission_error":"You don't have permission to take this action"]: you're not logged in as an admin 
 
 NOTE : no further errors should pop up since the mysql is handling the if the dates needed are not passed
