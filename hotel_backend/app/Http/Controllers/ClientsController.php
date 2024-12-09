@@ -13,178 +13,18 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\utils\AuthorityCheckers;
+
 
 class ClientsController extends Controller
 {
-    /** a function to check if a user is admin
-     * @param User $user
-     * @return bool
-     */
-    private function isAdmin(User $user):bool{
-        if ($user->is_admin == 1){
-            return true;
-        }
-        return false;
-    }
-
-    /** a function to check if a user is a normal user
-     * @param User $user
-     * @return bool
-     */
-    private function isUser(User $user):bool{
-        if ($user->is_admin == 0){
-            return true;
-        }
-        return false;
-    }
-    private function reservationsAdminBasse (Request $request, string $procedure, array $procedureArgs): JsonResponse {
-        $userId = auth()->id();
-        # we can add redis caching here
-        $user = User::query()->find($userId);
-        # expected args
-        $expectedArgs = "?";
-
-        for ($index = 0; $index < count($procedureArgs) - 1; $index++) {
-            $expectedArgs .= ",?";
-        }
-        # get all reservations
-        try{
-            $reservations = DB::select("CALL $procedure($expectedArgs)", $procedureArgs);
-        }catch(\Exception $exception){
-            return response()->json([
-                'error' => "the query is not right",
-                'query'=>"CALL $procedure($expectedArgs)"
-            ]);
-        }
-
-
-        if ($this->isAdmin($user)){
-            return response()->json([
-                'reservations' => [$reservations]
-            ]);
-        }
-        return response()->json([
-            'permission_error' => ["You don't have permission to take this action"],
-        ]);
-    }
 
     /**
-     * get all active reservations in a hotel
-     * @param Request $request the request
-     * that means if it's meant for admins  or users or both admins|users
+     * A function to log in any user
+     * @param Request $request
      * @return JsonResponse
      */
-    public function getAllReservationsForHotel(Request $request): JsonResponse
-    {
-        $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
-        if (!$hotel){
-            return response()->json([
-                'error' => ["no hotel was specified"],
-            ]);
-        }
-        return $this->reservationsAdminBasse($request, "allActiveReservationsInHotel", [$hotel]);
-    }
-    /**
-     * get all old (old means that they are removed from reservations table into historic)
-     * reservations  in a hotel
-     * @param Request $request the request
-     * that means if it's meant for admins  or users or both admins|users
-     * @return JsonResponse
-     */
-    public function getAllOldReservationsForHotel(Request $request): JsonResponse
-    {
-        $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
-        if (!$hotel){
-            return response()->json([
-                'error' => ["no hotel was specified"],
-            ]);
-        }
-        return $this->reservationsAdminBasse($request, "allOldReservationsInHotel", [$hotel]);
-    }
-
-    public function getAllReservationsWithCheckInAfter(Request $request): JsonResponse
-    {
-        $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
-        $after = $request_data->get("after");
-        if (!$hotel){
-            return response()->json([
-                'error' => ["no hotel was specified"],
-            ]);
-        }
-        return $this->reservationsAdminBasse($request, "allReservationsWithCheckInAfter", [$hotel, $after]);
-    }
-
-    public function getAllReservationsWithCheckInBefore(Request $request): JsonResponse
-    {
-        $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
-        $before = $request_data->get("before");
-        if (!$hotel){
-            return response()->json([
-                'error' => ["no hotel was specified"],
-            ]);
-        }
-        return $this->reservationsAdminBasse($request, "allReservationsWithCheckInBefore", [$hotel, $before]);
-    }
-
-    public function getAllReservationsWithCheckInBetween(Request $request): JsonResponse
-    {
-        $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
-        $left = $request_data->get("left");
-        $right = $request_data->get("right");
-        if (!$hotel){
-            return response()->json([
-                'error' => ["no hotel was specified"],
-            ]);
-        }
-        return $this->reservationsAdminBasse($request, "allReservationsWIthCheckInBetween", [$hotel, $left, $right]);
-    }
-
-    public function getAllReservationsWithCheckOutAfter(Request $request): JsonResponse
-    {
-        $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
-        $after = $request_data->get("after");
-        if (!$hotel){
-            return response()->json([
-                'error' => ["no hotel was specified"],
-            ]);
-        }
-        return $this->reservationsAdminBasse($request, "allReservationsWithCheckOutBetween", [$hotel, $after]);
-    }
-
-    public function getAllReservationsWithCheckOutBefore(Request $request): JsonResponse
-    {
-        $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
-        $before = $request_data->get("before");
-        if (!$hotel){
-            return response()->json([
-                'error' => ["no hotel was specified"],
-            ]);
-        }
-        return $this->reservationsAdminBasse($request, "allReservationsWithCheckOutBefore", [$hotel, $before]);
-    }
-
-    public function getAllReservationsWithCheckOutBetween(Request $request): JsonResponse
-    {
-        $request_data = $request->json();
-        $hotel = $request_data->get("hotel");
-        $left = $request_data->get("left");
-        $right = $request_data->get("right");
-
-        if (!$hotel){
-            return response()->json([
-                'error' => ["no hotel was specified"],
-            ]);
-        }
-        return $this->reservationsAdminBasse($request, "allReservationsWithCheckOutBetween", [$hotel, $left, $right]);
-    }
-    public function login(Request $request){
+    public function login(Request $request): JsonResponse{
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
@@ -197,8 +37,12 @@ class ClientsController extends Controller
         return response()->json(['error' => 'Unauthorized'], 401);
     }
 
-
-    public function logout(Request $request)
+    /**
+     * A function to log out any user
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function logout(Request $request):JsonResponse
     {
         Auth::logout();
         $request->session()->invalidate();
@@ -206,6 +50,11 @@ class ClientsController extends Controller
         return response()->json(['message' => 'Logged out successfully']);
     }
 
+    /**
+     * A function that creates a new client
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function createClient(Request $request): JsonResponse
     {
         $request_data = $request->json();
@@ -320,4 +169,87 @@ class ClientsController extends Controller
         }
         return response()->json(["msg" => "Client deleted successfully"], 200);
     }
+
+    public function getAllClients(Request $request): JsonResponse{
+        $session_client_id = auth()->id();
+        $user = User::query()->find($session_client_id);
+        if (!AuthorityCheckers::isAdmin($user)){
+            return response()->json(["error" => "you don't have permission"], 403);
+        }
+        return response()->json(User::all()->where("is_admin", false), 200);
+    }
+
+    public function getAllAdmins(Request $request): JsonResponse{
+        $check = AuthorityCheckers::isUserAdmin();
+        if (!$check){
+            return response()->json(["error" => "you don't have permission"], 403);
+        }
+        return response()->json(User::all()->where("is_admin", true), 200);
+    }
+
+    public function getClientById(Request $request): JsonResponse{
+        $check = AuthorityCheckers::isUserAdmin();
+        if (!$check){
+            return response()->json(["error" => "you don't have permission"], 403);
+        }
+
+        $request_data = $request->json();
+        $client_id = $request_data->get("client_id");
+
+        if (!$client_id){
+            return response()->json(["error" => "client_id required"], 400);
+        }
+        # a client has is_admin false, so even if we search for a valid id and it happens to be an admin
+        # we don't want that result
+        $client = User::query()->where("is_admin", false)->where("id", $client_id)->first();
+        echo "here";
+        if (!$client){
+            return response()->json(["error" => "no client with such id"], 400);
+        }
+        return response()->json($client, 200);
+    }
+
+    public function getAdminById(Request $request): JsonResponse{
+        $check = AuthorityCheckers::isUserAdmin();
+        if (!$check){
+            return response()->json(["error" => "you don't have permission"], 403);
+        }
+
+        $request_data = $request->json();
+        $admin_id = $request_data->get("admin_id");
+
+        if (!$admin_id){
+            return response()->json(["error" => "admin_id required"], 400);
+        }
+        # an admin has is_admin true, so even if we search for a valid id ,and it happens to be a normal user
+        # we don't want that result
+        $admin = User::query()->where("is_admin", true)->where("id", $admin_id)->first();
+        echo "here";
+        if (!$admin){
+            return response()->json(["error" => "no admin with such id"], 400);
+        }
+        return response()->json($admin, 200);
+    }
+
+    public function getClientByEmail(Request $request): JsonResponse{
+        $check = AuthorityCheckers::isUserAdmin();
+        if (!$check){
+            return response()->json(["error" => "you don't have permission"], 403);
+        }
+        $request_data = $request->json();
+        $email = $request_data->get("email");
+        $client = User::query()->where("is_admin", false)->where("email", $email)->first();
+        return response()->json($client, 200);
+    }
+    public function getAdminByEmail(Request $request): JsonResponse{
+        $check = AuthorityCheckers::isUserAdmin();
+        if (!$check){
+            return response()->json(["error" => "you don't have permission"], 403);
+        }
+        $request_data = $request->json();
+        $email = $request_data->get("email");
+        $admin = User::query()->where("is_admin", true)->where("email", $email)->first();
+        return response()->json($admin, 200);
+    }
+
 }

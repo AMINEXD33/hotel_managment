@@ -9,4 +9,13 @@ class Rooms extends Model
 {
     /** @use HasFactory<\Database\Factories\RoomsFactory> */
     use HasFactory;
+    protected  $fillable = [
+            "id_hotel",
+            "type",
+            "suites",
+            "price",
+            "beds",
+            "baths",
+            "description"
+    ];
 }
