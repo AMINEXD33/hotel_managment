@@ -4,7 +4,7 @@
 ### :magic_wand: **api/hotelAliveReservation**
 #### An endpoint to get alive reservations , note that an alive reservation means a still ongoing one.
 
-*need to be loggedin*
+*Authentication Required*
 - yes
 
 *Authority*
@@ -24,7 +24,7 @@
 ### :magic_wand: **api/hotelOldReservation**
 #### An endpoint to get old reservations , note that an old reservation means an expired reservation.
 
-*need to be loggedin*
+*Authentication Required*
 - yes
 
 *Authority*
@@ -45,7 +45,7 @@
 ### :magic_wand: **api/hotelReservationsCheckinAfter**
 #### An endpoint to get reservations that have a checkin  date that comes after a specified date.
 
-*need to be loggedin*
+*Authentication Required*
 - yes
 
 *Authority*
@@ -71,7 +71,7 @@ NOTE : no further errors should pop up since the mysql is handling the if the da
 ### :magic_wand: **api/hotelReservationsCheckinBefore**
 #### An endpoint to get reservations that have a checkin  date that comes before a specified date.
 
-*need to be loggedin*
+*Authentication Required*
 - yes
 
 *Authority*
@@ -95,7 +95,7 @@ NOTE : no further errors should pop up since the mysql is handling the if the da
 ### :magic_wand: **api/hotelReservationsCheckinBetween**
 #### An endpoint to get reservations with a checkin date that comes between two dates just like an interval [x1, x2]
 
-*need to be loggedin*
+*Authentication Required*
 - yes
 
 *Authority*
@@ -121,7 +121,7 @@ NOTE : no further errors should pop up since the mysql is handling the if the da
 ### :magic_wand: **api/hotelReservationsCheckoutAfter**
 #### An endpoint to get reservations that have a checkout  date that comes after a specified date.
 
-*need to be loggedin*
+*Authentication Required*
 - yes
 
 *Authority*
@@ -147,7 +147,7 @@ NOTE : no further errors should pop up since the mysql is handling the if the da
 ### :magic_wand: **api/hotelReservationsCheckoutBefore**
 #### An endpoint to get reservations that have a checkout  date that comes before a specified date.
 
-*need to be loggedin*
+*Authentication Required*
 - yes
 
 *Authority*
@@ -171,7 +171,7 @@ NOTE : no further errors should pop up since the mysql is handling the if the da
 ### :magic_wand: **api/hotelReservationsCheckoutBetween**
 #### An endpoint to get reservations with a checkout date that comes between two dates just like an interval [x1, x2]
 
-*need to be loggedin*
+*Authentication Required*
 - yes
 
 *Authority*
