@@ -1,7 +1,7 @@
 # Endpoints documentation
 
 ## Reservations
-### **api/hotelAliveReservation**
+### :magic_wand: **api/hotelAliveReservation**
 #### An endpoint to get alive reservations , note that an alive reservation means a still ongoing one.
 
 *need to be loggedin*
