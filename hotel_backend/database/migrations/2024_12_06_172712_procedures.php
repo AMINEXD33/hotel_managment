@@ -12,20 +12,30 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $procedure_1 = database_path('../cutomMysqlFiles/procedures/addReservation.sql');
-        $procedure_2 = database_path('../cutomMysqlFiles/procedures/deleteReservation.sql');
-        $procedure_3 = database_path('../cutomMysqlFiles/procedures/generateAnalitics.sql');
-        $procedure_4 = database_path('../cutomMysqlFiles/procedures/generateAnaliticsMounthlyRevenues.sql');
-        $procedure_5 = database_path('../cutomMysqlFiles/procedures/generateAnaliticsYearlyRevenues.sql');
-        $procedures = [$procedure_1, $procedure_2, $procedure_3, $procedure_4, $procedure_5];
-        for ($index =0; $index < count($procedures); $index++) {
-            if (file_exists($procedures[$index])) {
-                $sql = file_get_contents($procedures[$index]);
+        $procedures = [
+            database_path('../cutomMysqlFiles/procedures/addReservation.sql'),
+            database_path('../cutomMysqlFiles/procedures/deleteReservation.sql'),
+            database_path('../cutomMysqlFiles/procedures/generateAnalitics.sql'),
+            database_path('../cutomMysqlFiles/procedures/generateAnaliticsMounthlyRevenues.sql'),
+            database_path('../cutomMysqlFiles/procedures/generateAnaliticsYearlyRevenues.sql'),
+            database_path("../cutomMysqlFiles/procedures/allActiveReservationsInHotel.sql"),
+            database_path("../cutomMysqlFiles/procedures/allOldReservationsInHotel.sql"),
+            database_path("../cutomMysqlFiles/procedures/allReservationsWithCheckInAfter.sql"),
+            database_path("../cutomMysqlFiles/procedures/allReservationsWithCheckInBefore.sql"),
+            database_path("../cutomMysqlFiles/procedures/allReservationsWithCheckOutAfter.sql"),
+            database_path("../cutomMysqlFiles/procedures/allReservationsWithCheckOutBefore.sql"),
+            database_path("../cutomMysqlFiles/procedures/allReservationsWithCheckOutBetween.sql"),
+            database_path("../cutomMysqlFiles/procedures/allReservationsWIthCheckInBetween.sql"),
+
+        ];
+        foreach ($procedures as $procedure) {
+            if (file_exists($procedure)) {
+                $sql = file_get_contents($procedure);
                 Log::info("Executing SQL: " . $sql);
                 # run the file in this migration
                 DB::unprepared($sql);
             }else{
-                throw  new Exception("file in path [".$procedures[$index]."]not found");
+                throw  new Exception("file in path [".$procedure."]not found");
             }
         }
     }
