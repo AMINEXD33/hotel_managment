@@ -7,10 +7,10 @@
 *need to be loggedin*
 - yes
 
-- *Authority*
+*Authority*
 - admins only
 
-- *Input expected*
+*Input expected*
 - hotel_id : the id of the target hotel
 
 - *expected return*
