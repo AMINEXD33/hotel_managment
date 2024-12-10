@@ -2,8 +2,9 @@ DROP PROCEDURE IF EXISTS allReservationsWithCheckOutAfter;
 CREATE PROCEDURE  allReservationsWithCheckOutAfter(IN hotel INT, IN someDate DATE)
 BEGIN
     IF someDate IS NULL THEN
-SELECT NULL;-- NO NEED to raise any errors simpy there is nothing after nothing :)
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "one param is not a date";
 end if;
+
 
 WITH allReservations AS (
     SELECT *, 'alive' as 'status' FROM reservations
@@ -14,7 +15,7 @@ WITH allReservations AS (
 SELECT * FROM allReservations
                   INNER JOIN rooms
                              ON rooms.id = allReservations.id_room
-WHERE check_out > someDate AND id_hotel = hotel;
+WHERE check_out >= someDate AND id_hotel = hotel;
 END;
 
-call allReservationsWithCheckOutAfter(1, "2024-12-00");
+# call allReservationsWithCheckOutAfter(1, "2024-12-00");

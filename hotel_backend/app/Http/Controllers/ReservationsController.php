@@ -45,13 +45,13 @@ class ReservationsController extends Controller
 
         if (AuthorityCheckers::isAdmin($user)){
             return response()->json([
-                'reservations' => [$reservations], 200
-            ]);
+                'reservations' => $reservations
+            ], 200);
         }
         return response()->json([
             'permission_error' => ["You don't have permission to take this action"],
-            400
-        ]);
+
+        ], 400);
     }
 
     /**
@@ -66,8 +66,8 @@ class ReservationsController extends Controller
         $hotel = $request_data->get("hotel_id");
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel_id was specified"],422
-            ]);
+                'error' => ["no hotel_id was specified"]
+            ], 422);
         }
         return $this->reservationsAdminBasse($request, "allActiveReservationsInHotel", [$hotel]);
     }
@@ -85,8 +85,8 @@ class ReservationsController extends Controller
         if (!$hotel){
             return response()->json([
                 'error' => ["no hotel_id was specified"],
-                422
-            ]);
+
+            ],422);
         }
         return $this->reservationsAdminBasse($request, "allOldReservationsInHotel", [$hotel]);
     }
@@ -103,8 +103,8 @@ class ReservationsController extends Controller
         $after = $request_data->get("after");
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel_id was specified"],422
-            ]);
+                'error' => ["no hotel_id was specified"]
+            ],422);
         }
         return $this->reservationsAdminBasse($request, "allReservationsWithCheckInAfter", [$hotel, $after]);
     }
@@ -122,8 +122,8 @@ class ReservationsController extends Controller
         $before = $request_data->get("before");
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel_id was specified"],422
-            ]);
+                'error' => ["no hotel_id was specified"]
+            ], 422);
         }
         return $this->reservationsAdminBasse($request, "allReservationsWithCheckInBefore", [$hotel, $before]);
     }
@@ -142,8 +142,8 @@ class ReservationsController extends Controller
         $right = $request_data->get("right");
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel_id was specified"],422
-            ]);
+                'error' => ["no hotel_id was specified"]
+            ], 422);
         }
         return $this->reservationsAdminBasse($request, "allReservationsWIthCheckInBetween", [$hotel, $left, $right]);
     }
@@ -161,10 +161,10 @@ class ReservationsController extends Controller
         $after = $request_data->get("after");
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel_id was specified"],422
-            ]);
+                'error' => ["no hotel_id was specified"]
+            ], 422);
         }
-        return $this->reservationsAdminBasse($request, "allReservationsWithCheckOutBetween", [$hotel, $after]);
+        return $this->reservationsAdminBasse($request, "allReservationsWithCheckOutAfter", [$hotel, $after]);
     }
 
     /**
@@ -180,8 +180,8 @@ class ReservationsController extends Controller
         $before = $request_data->get("before");
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel_id was specified"],422
-            ]);
+                'error' => ["no hotel_id was specified"]
+            ], 422);
         }
         return $this->reservationsAdminBasse($request, "allReservationsWithCheckOutBefore", [$hotel, $before]);
     }
@@ -201,8 +201,8 @@ class ReservationsController extends Controller
 
         if (!$hotel){
             return response()->json([
-                'error' => ["no hotel_id was specified"],422
-            ]);
+                'error' => ["no hotel_id was specified"]
+            ], 422);
         }
         return $this->reservationsAdminBasse($request, "allReservationsWithCheckOutBetween", [$hotel, $left, $right]);
     }

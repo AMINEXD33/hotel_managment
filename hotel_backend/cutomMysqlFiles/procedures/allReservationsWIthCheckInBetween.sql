@@ -1,16 +1,9 @@
 DROP PROCEDURE IF EXISTS allReservationsWIthCheckInBetween;
 CREATE PROCEDURE  allReservationsWIthCheckInBetween(IN hotel INT, IN someDate1 DATE, IN someDate2 DATE)
 BEGIN
-    DECLARE dateX1 date default  now();-- default to now in case nothing is passed
-    DECLARE dateX2 date default  adddate(now(), INTERVAL 1 minute); -- default to 1 min in case nothing is passed
-
-    IF someDate1 > someDate2 THEN
-        SELECT NULL; -- nothing because it doesn't resepect  date1 <= checkin <= date2
+    IF someDate1 IS NULL  OR  someDate2 IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "one param is not a date";
     end if;
-
-    SET dateX1 = COALESCE(someDate1, dateX1);
-    SET dateX2 = COALESCE(someDate2, dateX2);
-
     WITH allReservations AS (
         SELECT *, 'alive' as 'status' FROM reservations
         UNION ALL
@@ -20,5 +13,5 @@ BEGIN
 SELECT * FROM allReservations
                   INNER JOIN rooms
                              ON rooms.id = allReservations.id_room
-WHERE dateX1 <= check_in AND  check_in <= dateX2 AND id_hotel = hotel;
+WHERE someDate1 <= check_in AND  check_in <= someDate2 AND id_hotel = hotel;
 END;
