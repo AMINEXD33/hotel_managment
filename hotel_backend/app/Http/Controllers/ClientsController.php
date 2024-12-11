@@ -19,6 +19,14 @@ use App\Http\Controllers\utils\AuthorityCheckers;
 class ClientsController extends Controller
 {
 
+    public function checkauth(Request $request): JsonResponse{
+        $check = AuthorityCheckers::isUserAdmin();
+        if (!$check){
+            return response()->json(["message" => "authenticated", "role" => "user"]);
+        }
+        return response()->json(["message" => "authenticated", "role"=> "admin"]);
+    }
+
     /**
      * A function to log in any user
      * @param Request $request
@@ -31,10 +39,10 @@ class ClientsController extends Controller
             $user = Auth::user();
             $request->session()->regenerate();
             return response()->json([
-                'response' => 'success',
-            ]);
+                'response' => 'success'
+            ], 200);
         }
-        return response()->json(['error' => 'Unauthorized'], 401);
+        return response()->json(['error' => 'UnauthorizedDD'], 401);
     }
 
     /**

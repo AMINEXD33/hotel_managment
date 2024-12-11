@@ -66,3 +66,6 @@ Route::get('/getAllUnReservedRooms', [RoomsController::class, 'getAllUnReservedR
 
 Route::post('/login', [ClientsController::class, 'login']);
 Route::get('/logout', [ClientsController::class, 'logout']);
+Route::get('/checkauth', [ClientsController::class, 'checkauth'])->middleware('auth:sanctum');
+
+
