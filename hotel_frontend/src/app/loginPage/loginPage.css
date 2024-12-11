@@ -1,0 +1,144 @@
+.loginPage_maincontainer{
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    height: 100vh;
+}
+.loginPage_maincontainer *{
+    font-family: exo;
+}
+.loginPage_midcontainer{
+    background-color: aliceblue;
+    height: 500px;
+    display: flex;
+    padding: 0;
+    border-radius: 10px;
+    flex-wrap: wrap;
+    min-width: 500px;
+}
+
+.loginPage_mask{
+    height: 100%;
+    width: 50%;
+    border-radius: 10px;
+    /* background-color: rgba(0, 0, 0, 0.562); */
+}
+
+.living_room_photo{
+    background-image: url(./imgs/living_room.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.filter{
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.705);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    animation: filter_anim 3s alternate forwards ease-in-out;
+}
+
+.loginPage_header{
+    animation: loginPage_animation1 2s alternate forwards ease-in-out;
+    opacity: 0;
+}
+
+.loginPage_socials{
+    display: flex;
+    animation: loginPage_animation2 2s 2s alternate forwards ease-in-out;
+    opacity: 0;
+}
+@keyframes filter_anim {
+    from{
+        background-color: rgba(0, 0, 0, 0.705);
+    }
+    to{
+        background-color: rgba(0, 0, 0, 0.911);
+    }
+    
+}
+
+
+@keyframes loginPage_animation1 {
+    0%{
+        opacity: 0;
+    }
+    50%{
+        opacity: 1;
+        transform: translateY(0px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateY(-30px);
+    }
+    
+}
+@keyframes loginPage_animation2 {
+    0%{
+        opacity: 0;
+    }
+    50%{
+        opacity: 1;
+        transform: translateY(0px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateY(30px);
+    }
+    
+}
+
+
+.loginPage_loginform{
+    width: 50%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+}
+.loginPage_loginform label{
+    color: rgba(0, 0, 0, 0.63);
+}
+.loginpage_success{
+    align-self: center;
+    width: 200px;
+    margin: 10px;
+}
+.spinnedS{
+    margin: 10px;
+    align-self: center;
+}
+.havanaccount{
+    color: black;
+    display: flex;
+    font-size: small;
+}
+#registerlink{
+    text-decoration: underline;
+    color: green;
+}
+.alert{
+    position: absolute;
+    top: 10px;
+    right: calc(50% - (200px/2));
+    animation: alertpopup 0.2s alternate forwards ease-in-out;
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+@keyframes alertpopup {
+    from{
+        opacity: 0.5;
+        scale: 0.9;
+    }
+    to{
+        opacity: 1;
+        scale: 1;
+    }
+    
+}
