@@ -27,7 +27,7 @@ Route::get('/hotelReservationsCheckoutBetween', [ReservationsController::class, 
 
 
 // CRUD  clients
-Route::post('/createClient', [ClientsController::class, 'createClient']);
+Route::post('/register', [ClientsController::class, 'createClient']);
 Route::post('/modifyClient', [ClientsController::class, 'modifyClient'])->middleware('auth:sanctum');
 Route::post('/deleteClient', [ClientsController::class, 'deleteClient'])->middleware('auth:sanctum');
 

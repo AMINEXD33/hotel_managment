@@ -1,3 +1,37 @@
+.loginPage_midcontainer{
+    height: 700px;
+}
+.checkerBox{
+    color: black;
+    padding: 10px;
+    font-size: small;
+}
+.checkerBox>p{
+    display: flex;
+    align-items: center;
+    line-height: 17px;
+}
+.ver{
+    color: green;
+}
+.notver{
+    color: red;
+    animation: shake 0.3s alternate forwards ease-in-out 2;
+    text-decoration: underline;
+}
+@keyframes shake {
+    0%{
+        transform: translateX(0px);
+    }
+    50%{
+        transform: translateX(-10px);
+    }
+    100%{
+        transform: translateX(0px);
+    }
+    
+}
+
 .loginPage_maincontainer{
     display: flex;
     align-items: center;
@@ -9,7 +43,7 @@
 }
 .loginPage_midcontainer{
     background-color: aliceblue;
-    height: 500px;
+    height: 700px;
     display: flex;
     padding: 0;
     border-radius: 10px;
@@ -25,7 +59,7 @@
 }
 
 .living_room_photo{
-    background-image: url(./imgs/living_room.jpg);
+    background-image: url(../loginPage/imgs/living_room.jpg);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -124,7 +158,8 @@
 .alert{
     position: absolute;
     top: 10px;
-    right: calc(50% - (200px/2));
+    left: 50%;
+    transform: translateX(-50%);
     animation: alertpopup 0.2s alternate forwards ease-in-out;
     min-width: 200px;
     width: fit-content;

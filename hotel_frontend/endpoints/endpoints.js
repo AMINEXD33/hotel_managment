@@ -1,5 +1,5 @@
-var base = "http://127.0.0.1:8000/api";
-var base2 = "http://127.0.0.1:8000";
+var base = "https://localhost/api";
+var base2 = "https://localhost/sanctum/csrf-cookie";
 
 
 export function API_checkauth (){
@@ -11,5 +11,9 @@ export function API_login(){
 }
 
 export function API_csrf(){
-    return (base2.concat("/sanctum/csrf-cookie"))
+    return (base2)
+}
+
+export function API_register(){
+    return (base.concat("/register"));
 }

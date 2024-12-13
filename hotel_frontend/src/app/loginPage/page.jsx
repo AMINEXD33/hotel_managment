@@ -10,9 +10,30 @@ import instagram from "./imgs/instagram.png";
 import Link from "next/link";
 import {API_login} from "../../../endpoints/endpoints";
 import {API_csrf} from "../../../endpoints/endpoints";
+import { useRouter } from 'next/navigation';
 
 
-function loginPagelogin(formData, setErrorAlertState, setSuccessAlertState, loginLock, setLoginLock){
+function goToDashboard(router, role){
+    console.warn("here");
+    if (role === "admin"){
+        console.warn("go to admin dashboard");
+        router.push("/adminDashboard");
+    }else if(role === "user"){
+        console.warn("go to user dashboard");
+        router.push("/userDashboard");
+    }else{
+        console.warn("wtf this is the role i got ", role);
+    }
+}
+
+function loginPagelogin(
+    formData, 
+    setErrorAlertState, 
+    setSuccessAlertState, 
+    loginLock, 
+    setLoginLock,
+    router
+){
     if (loginLock){
         return;
     }
@@ -22,7 +43,10 @@ function loginPagelogin(formData, setErrorAlertState, setSuccessAlertState, logi
     })
     .then(() => {
         console.log("ooko");
-    });
+    })
+    .catch(err=>{
+        console.warn(err);
+    })
 
     console.log("data = >", formData);
     setLoginLock(true);
@@ -30,8 +54,8 @@ function loginPagelogin(formData, setErrorAlertState, setSuccessAlertState, logi
         fetch(API_login(), {
             method:"POST",
             body: JSON.stringify({
-                "email": "laila.herman@example.com",
-                "password": "password",
+                "email": formData.email,
+                "password": formData.password,
             }),
             headers: {
                 'Content-Type': 'application/json',
@@ -39,10 +63,14 @@ function loginPagelogin(formData, setErrorAlertState, setSuccessAlertState, logi
             credentials: 'include',
         })
         .then(headers=> headers)
-        .then((response)=>{
+        .then(async (response)=>{
             if (response.status === 200){
                 setSuccessAlertState({state:true, message:"you're loggedin"});
                 console.warn("we're in");
+                let data = await response.json();
+                console.warn(data);
+                let role = data.role;
+                goToDashboard(router, role);
             }
             else{
                 setErrorAlertState({state:true, message:"wrong credentials !"});
@@ -64,7 +92,7 @@ function loginPagelogin(formData, setErrorAlertState, setSuccessAlertState, logi
     
     
         })
-    }, 500);
+    }, 200);
     
     
     
@@ -89,7 +117,7 @@ export default function LoginPage()
         console.log("error >"+errorAlertState);
         console.log("success >"+successAlertState);
     }, [errorAlertState, successAlertState]);
-
+    const router = useRouter();
     return (
         <div className="container-fluid loginPage_maincontainer">
             {  
@@ -153,7 +181,15 @@ export default function LoginPage()
                         <button 
                         type="button" 
                         className="btn btn-success loginpage_success"
-                        onClick={()=>{loginPagelogin(formData, setErrorAlertState, setSuccessAlertState, loginLock, setLoginLock)}}
+                        onClick={()=>{
+                            loginPagelogin(
+                                formData, 
+                                setErrorAlertState, 
+                                setSuccessAlertState, 
+                                loginLock, 
+                                setLoginLock,
+                                router
+                            )}}
                         >login</button>
                         :
                         <div className="spinner-border text-success spinnedS" role="status">
@@ -161,7 +197,7 @@ export default function LoginPage()
                         </div>
                     }
                     <div className="havanaccount">
-                        <p>you don't have an account yet ? create one <Link href={"/register"} id="registerlink">here</Link></p>
+                        <p>you don't have an account yet ? create one <a  href={"/registerPage"} id="registerlink">here</a></p>
                         
                     </div>
                 

@@ -1,0 +1,9 @@
+.master{
+    padding: 0;
+}
+.pagecontentmain{
+    height: 100vh;
+    width: 100%;
+    background-color: aqua;
+    overflow-y: auto;
+}

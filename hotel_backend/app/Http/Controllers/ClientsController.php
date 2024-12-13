@@ -39,7 +39,8 @@ class ClientsController extends Controller
             $user = Auth::user();
             $request->session()->regenerate();
             return response()->json([
-                'response' => 'success'
+                'response' => 'success',
+                'role' => (bool)$user->is_admin? "admin": "user"
             ], 200);
         }
         return response()->json(['error' => 'UnauthorizedDD'], 401);
@@ -67,15 +68,14 @@ class ClientsController extends Controller
     {
         $request_data = $request->json();
         $data = [
-            $request_data->get("name"),
+            $request_data->get("firstname"),
             $request_data->get("lastname"),
             $request_data->get("password"),
             $request_data->get("email"),
-            $request_data->get("photo"),
         ];
         foreach ($data as $pieceOfData) {
             if (!$pieceOfData){
-                return response()->json(["error" => ["please send all necessary data"]], 400);
+                return response()->json(["error" => ["please send all necessary data", $data]], 400);
             }
         }
         try{
@@ -84,10 +84,9 @@ class ClientsController extends Controller
                 'lastname'=>$data[1],
                 'password'=>Hash::make($data[2]),
                 'email'=>$data[3],
-                'photo'=>$data[4],
             ]);
         }catch (\Exception $e){
-            return response()->json(["error" => "can't create a client with this data"], 400);
+            return response()->json(["error" => "can't register you with this data", $e], 400);
         }
         return response()->json(["msg" => "Client created successfully"], 200);
     }
