@@ -2,7 +2,17 @@
 import SideBar from "@/app/global_components/sidebar/sidebar";
 import "./adminDash.css";
 import PieChart from "../global_components/charts/pieChart";
-
+import RankHotelByReservationCount from "../global_components/charts/hotelRankingTables/rankHotelsByReservationCount";
+import massCall from "../massCall";
+import { useEffect } from "react";
+import { API_RankHotelsByReservationCount } from "../../../endpoints/endpoints";
+import { API_classedRoomsByReservationsCount } from "../../../endpoints/endpoints";
+import RankHotelsByReservationRating from "../global_components/charts/hotelRankingTables/rankHotelsByReservationRating";
+import RankRoomsByReservationCount from "../global_components/charts/hotelRankingTables/rankRoomsByReservationCount";
+import RankRoomsByReservationRating from "../global_components/charts/hotelRankingTables/rankRoomsByReservationRating";
+import ReservationCountByMonth from "../global_components/charts/hotelRankingTables/reservationCountByMonth";
+import ReservationCountByYear from "../global_components/charts/hotelRankingTables/reservationCountByYear";
+import Image from "next/image";
 
 export default function statsPage(){
 
@@ -12,7 +22,40 @@ export default function statsPage(){
         <div className="container-fluid   master">
             <SideBar/>
             <div className="pagecontentmain">
-                <PieChart/>
+
+                <div className="part">
+                    <h4 className="partHeaders">Hotels ranked by reservation count</h4>
+                <RankHotelByReservationCount/>
+                </div>
+
+
+                <div className="part">
+                    <h4 className="partHeaders">Hotels ranked by average ratings</h4>
+                <RankHotelsByReservationRating/>
+                </div>
+                
+
+
+                <div className="part">
+                    <h4 className="partHeaders">Rank Romms By reservation count</h4>
+                <RankRoomsByReservationCount/>
+                </div>
+
+
+                <div className="part">
+                    <h4 className="partHeaders">Rank Romms By average ratings</h4>
+                <RankRoomsByReservationRating/>
+                </div>
+
+                <div className="part" style={{maxHeight:"600px", overflow:"none"}}>
+                    <h4 className="partHeaders">Hotel Monthly Reservations frequency</h4>
+                <ReservationCountByMonth/>
+                </div>
+
+                <div className="part" style={{maxHeight:"600px", overflow:"none"}}>
+                    <h4 className="partHeaders">Hotel yearly Reservations frequency</h4>
+                <ReservationCountByYear/>
+                </div>
             </div>
         </div>
     )

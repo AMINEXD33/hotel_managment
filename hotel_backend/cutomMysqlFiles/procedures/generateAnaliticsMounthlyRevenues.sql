@@ -31,3 +31,5 @@ BEGIN
     GROUP BY tb1.year,
              tb1.month;
 END;
+
+# CALL generateAnaliticsMounthlyRevenues();

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text("check_out_note")->nullable(true);
             $table->text("check_in_note")->nullable(true);
             $table->float("room_stars")->nullable(true);
+            $table->float("total_price")->default(0);
             $table->float("hotel_stars")->nullable(true);
             $table->timestamps();
         });

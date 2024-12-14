@@ -1,0 +1,6 @@
+.rankedHotelByCOunt{
+    width: 90%;
+    align-self: center;
+    max-height: 300px;
+    overflow-y: scroll;
+}

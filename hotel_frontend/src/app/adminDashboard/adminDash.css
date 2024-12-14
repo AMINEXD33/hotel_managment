@@ -2,8 +2,63 @@
     padding: 0;
 }
 .pagecontentmain{
-    height: 100vh;
+    margin-top: 50px;
+    height: calc( 100vh+ 50px);
     width: 100%;
-    background-color: aqua;
-    overflow-y: auto;
+    padding: 10px;
+    overflow-y: hidden;
 }
+.part{
+    width: 100%;
+    height: auto;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+    margin-top: 10px;
+    max-height: 300px;
+    height: fit-content;
+    overflow-y: auto;
+    /* filter: blur(4px); */
+    border: 1px solid rgba(0, 0, 0, 0.301);
+    animation: animateship 1s 0.5s alternate forwards ease-in-out;
+}
+@keyframes animateship {
+  from{
+      filter: blur(4px);
+  }to{
+    filter: blur(0px);
+  }
+}
+.part:hover{
+  outline: 2px solid rgba(0, 0, 0, 0.829);
+}
+
+.partHeaders{
+    color: black;
+}
+.partHeadersalone{
+    background-color: transparent;
+}
+/* Entire scrollbar */
+.part::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+    height: 5px; /* Height of the scrollbar (horizontal) */
+  }
+  
+  /* Scrollbar thumb */
+.part::-webkit-scrollbar-thumb {
+    background-color: #ffc10798; /* Color of the thumb */
+    border-radius: 0px; /* Rounded corners */
+    border: 2px solid transparent; /* Padding around thumb */
+  }
+  
+  /* Scrollbar track */
+.part::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the track */
+    border-radius: 6px; /* Rounded corners for the track */
+  }
+  
+  /* Hover effect on the thumb */
+.part::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Darker color on hover */
+  }

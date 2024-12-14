@@ -47,6 +47,7 @@ Route::post('/createHotel', [HotelsController::class, 'createHotel'])->middlewar
 Route::post('/deleteHotel', [HotelsController::class, 'deleteHotel'])->middleware('auth:sanctum');
 Route::post('/modifyHotel', [HotelsController::class, 'modifyHotel'])->middleware('auth:sanctum');
 
+Route::get('/getAllHotelsLite', [HotelsController::class, 'getAllHotelsLite']);
 Route::get('/getAllHotels', [HotelsController::class, 'getAllHotels']);
 Route::get('/getHotelById', [HotelsController::class, 'getHotelById']);
 Route::get('/getHotelByName', [HotelsController::class, 'getHotelByName']);
@@ -69,3 +70,15 @@ Route::get('/logout', [ClientsController::class, 'logout']);
 Route::get('/checkauth', [ClientsController::class, 'checkauth'])->middleware('auth:sanctum');
 
 
+// analitics functions
+Route::get('/classedHotelsByReservationsCount', [ReservationsController::class, 'classedHotelsByReservationsCount'])->middleware('auth:sanctum');
+Route::get('/classedHotelsByReservationsRating', [ReservationsController::class, 'classedHotelsByReservationsRating'])->middleware('auth:sanctum');
+Route::post('/classedRoomsByReservationsCount', [ReservationsController::class, 'classedRoomsByReservationsCount'])->middleware('auth:sanctum');
+Route::post('/classedRoomsByReservationsRating', [ReservationsController::class, 'classedRoomsByReservationsRating'])->middleware('auth:sanctum');
+
+Route::post('/reservationsCountByYear', [ReservationsController::class, 'reservationsCountByYear'])->middleware('auth:sanctum');
+Route::post('/reservationsCountByMonth', [ReservationsController::class, 'reservationsCountByMonth'])->middleware('auth:sanctum');
+
+
+// utility
+Route::get('/getAvailableYears', [ReservationsController::class, 'getAvailableYears'])->middleware('auth:sanctum');

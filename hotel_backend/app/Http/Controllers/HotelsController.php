@@ -106,6 +106,10 @@ class HotelsController extends Controller
         return  response()->json(Hotels::getAllHotels(), 200);
     }
 
+    public function getAllHotelsLite(Request $request):JsonResponse{
+        return  response()->json(Hotels::select(["id", "name"])->get(), 200);
+    }
+
     public function getHotelById(Request $request):JsonResponse{
         $hotel_id = $request->json()->get('hotel_id');
         if (!$hotel_id){

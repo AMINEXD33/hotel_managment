@@ -26,7 +26,14 @@ return new class extends Migration
             database_path("../cutomMysqlFiles/procedures/allReservationsWithCheckOutBefore.sql"),
             database_path("../cutomMysqlFiles/procedures/allReservationsWithCheckOutBetween.sql"),
             database_path("../cutomMysqlFiles/procedures/allReservationsWIthCheckInBetween.sql"),
-
+            database_path("../cutomMysqlFiles/procedures/reservationsCountByYear.sql"),
+            database_path("../cutomMysqlFiles/procedures/reservationsCoutByMonth.sql"),
+            database_path("../cutomMysqlFiles/procedures/classRoomsByReservationStars.sql"),
+            database_path("../cutomMysqlFiles/procedures/classRoomsByReservationCount.sql"),
+            database_path("../cutomMysqlFiles/procedures/classHotelsByReservationsCount.sql"),
+            database_path("../cutomMysqlFiles/procedures/classHotelsByReservationsRatings.sql"),
+            database_path("../cutomMysqlFiles/procedures/getAvailableYears.sql"),
+            
         ];
         foreach ($procedures as $procedure) {
             if (file_exists($procedure)) {

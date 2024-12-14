@@ -28,8 +28,11 @@ class ReservationsController extends Controller
         # we can add redis caching here
         $user = User::query()->find($userId);
         # expected args
-        $expectedArgs = "?";
 
+        $expectedArgs = "";
+        if (count($procedureArgs) > 0){
+            $expectedArgs = "?";
+        }
         for ($index = 0; $index < count($procedureArgs) - 1; $index++) {
             $expectedArgs .= ",?";
         }
@@ -39,6 +42,7 @@ class ReservationsController extends Controller
         }catch(\Exception $exception){
             return response()->json([
                 'error' => "the query is not right",
+                'message' => $exception->getMessage()
             ], 500);
         }
 
@@ -205,5 +209,65 @@ class ReservationsController extends Controller
             ], 422);
         }
         return $this->reservationsAdminBasse($request, "allReservationsWithCheckOutBetween", [$hotel, $left, $right]);
+    }
+
+
+    public function classedHotelsByReservationsCount(Request $request): JsonResponse{
+        return $this->reservationsAdminBasse($request, "classHotelsByReservationsCount", []);
+    }
+    public function classedHotelsByReservationsRating(Request $request): JsonResponse{
+        return $this->reservationsAdminBasse($request, "classHotelsByReservationsRatings", []);
+    }
+    public function classedRoomsByReservationsCount(Request $request): JsonResponse{
+        $request_data = $request->json();
+        $hotel = $request_data->get("hotel_id");
+        if (!$hotel){
+            return response()->json([
+                'error' => ["no hotel_id was specified"]
+            ], 422);
+        }
+        return $this->reservationsAdminBasse($request, "classRoomsByReservationCount", [$hotel]);
+    }
+    public function classedRoomsByReservationsRating(Request $request): JsonResponse{
+        $request_data = $request->json();
+        $hotel = $request_data->get("hotel_id");
+        if (!$hotel){
+            return response()->json([
+                'error' => ["no hotel_id was specified"]
+            ], 422);
+        }
+        return $this->reservationsAdminBasse($request, "classRoomsByReservationStars", [$hotel]);
+    }
+
+    public function reservationsCountByYear(Request $request): JsonResponse{
+        $request_data = $request->json();
+        $year = $request_data->get("year");
+        if (!$year){
+            return response()->json([
+                'error' => ["no year was specified"]
+            ], 422);
+        }
+        return $this->reservationsAdminBasse($request, "reservationsCountByYear", [$year]);
+
+    }
+    public function reservationsCountByMonth(Request $request): JsonResponse{
+        $request_data = $request->json();
+        $hotel = $request_data->get("hotel_id");
+        $year = $request_data->get("year");
+        if (!$hotel){
+            return response()->json([
+                'error' => ["no hotel_id was specified"]
+            ], 422);
+        }
+        else if (!$year){
+            return response()->json([
+                'error' => ["no year was specified"]
+            ], 422);
+        }
+        return $this->reservationsAdminBasse($request, "reservationsCountByMonth", [$hotel, $year]);
+    }
+
+    public function getAvailableYears(Request $request):JsonResponse{
+        return $this->reservationsAdminBasse($request, "getAvailableYears", []);
     }
 }

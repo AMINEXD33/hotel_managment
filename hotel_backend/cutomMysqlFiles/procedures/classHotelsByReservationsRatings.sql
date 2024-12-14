@@ -16,6 +16,8 @@ FROM S1
                      ON rooms.id = S1.id_room
          INNER JOIN  hotels
                      on rooms.id_hotel = hotels.id
-GROUP BY id_hotel
+GROUP BY id_hotel, hotels.name,  hotels.address
 ORDER BY rating;
 END;
+
+# CALL classHotelsByReservationsRatings();

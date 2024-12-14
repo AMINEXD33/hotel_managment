@@ -14,6 +14,7 @@ BEGIN
     DECLARE is_room INT default NULL;
     DECLARE is_customer INT default NULL;
     DECLARE room_available BOOLEAN DEFAULT false;
+    DECLARE totalPrice_ FLOAT4 DEFAULT 0;
 
     SELECT id FROM users WHERE users.id = pr_id_customer INTO is_customer;
     SELECT id, available FROM rooms WHERE rooms.id = pr_id_room INTO is_room, room_available;
@@ -28,6 +29,23 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "the room is not available";
     end if;
 
+    IF checkOut_date <= checkIn_date THEN
+        SIGNAL  SQLSTATE '45000' SET MESSAGE_TEXT = "checkin and check out are not valid";
+    end if;
+
+    # calculate the totalPrice
+    SELECT
+        TIMESTAMPDIFF(HOUR, checkIn_date, checkOut_date) * price
+    INTO
+        totalPrice_
+    FROM
+        rooms
+    WHERE
+        rooms.id = pr_id_room;
+
+    IF totalPrice_ <= 0 THEN
+        SIGNAL  SQLSTATE '45000' SET MESSAGE_TEXT = "checkin and check out are not valid";
+    end if;
 
     -- both customer and room are valid
     INSERT INTO reservations(
@@ -38,6 +56,7 @@ BEGIN
                              check_out_note,
                              check_in_note,
                              room_stars,
+                             total_price,
                              hotel_stars,
                              created_at
                             )
@@ -49,20 +68,21 @@ BEGIN
                 checkOut_note,
                 checkIn_note,
                 room_stars_,
+                totalPrice_,
                 hotel_starts_,
                 NOW()
                );
 end;
-# CALL addReservation(
-#     1,
-#     1,
-#     NOW(),
-#     ADDDATE(NOW(), INTERVAL 2 DAY),
-#     'DAMN',
-#     'DAMN2',
-#     3,
-#     5
-# );
+-- CALL addReservation(
+--     1,
+--     1,
+--     NOW(),
+--     ADDDATE(NOW(), INTERVAL 2 DAY),
+--     'DAMN',
+--     'DAMN2',
+--     3,
+--     5
+-- );
 #
 # CALL addReservation(
 #     2,

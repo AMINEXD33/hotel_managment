@@ -21,6 +21,7 @@ class Hotels extends Model
     static function getAllHotels(){
         return Hotels::all();
     }
+
     static function getHotelById(int $id){
         return Hotels::query()->find($id);
     }

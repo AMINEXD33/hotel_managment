@@ -17,3 +17,36 @@ export function API_csrf(){
 export function API_register(){
     return (base.concat("/register"));
 }
+
+export function API_RankHotelsByReservationCount(){
+    return(base.concat("/classedHotelsByReservationsCount"));
+}
+
+export function rankHotelsByReservationRating(){
+    return(base.concat("/classedHotelsByReservationsRating"));
+}
+
+export function API_classedRoomsByReservationsCount(){
+    return(base.concat("/classedRoomsByReservationsCount"));
+}
+
+export function API_classedRoomsByReservationsRatings(){
+    return(base.concat("/classedRoomsByReservationsRating"));
+}
+
+export function API_reservationCountByYear(){
+    return(base.concat("/reservationsCountByYear"));
+}
+
+export function API_reservationsCountByMonth(){
+    return(base.concat("/reservationsCountByMonth"));
+}
+export function API_availableYears(){
+    return(base.concat("/getAvailableYears"));
+}
+
+
+
+export function API_getHotelsLite(){
+    return(base.concat("/getAllHotelsLite"));
+}
