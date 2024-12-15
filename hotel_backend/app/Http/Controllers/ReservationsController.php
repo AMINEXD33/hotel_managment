@@ -270,4 +270,34 @@ class ReservationsController extends Controller
     public function getAvailableYears(Request $request):JsonResponse{
         return $this->reservationsAdminBasse($request, "getAvailableYears", []);
     }
+
+
+    public function generateAnaliticsMounthlyRevenues(Request $request): JsonResponse{
+        $request_data = $request->json();
+        $hotel = $request_data->get("hotel_id");
+        $year = $request_data->get("year");
+        if (!$hotel){
+            return response()->json([
+                'error' => ["no hotel_id was specified"]
+            ], 422);
+        }
+        else if (!$year){
+            return response()->json([
+                'error' => ["no year was specified"]
+            ], 422);
+        }
+        return $this->reservationsAdminBasse($request, "generateAnaliticsMounthlyRevenues", [$hotel, $year]);
+    }
+
+
+    public function generateAnaliticsYearlyRevenues(Request $request): JsonResponse{
+        $request_data = $request->json();
+        $year = $request_data->get("year");
+        if (!$year){
+            return response()->json([
+                'error' => ["no year was specified"]
+            ], 422);
+        }
+        return $this->reservationsAdminBasse($request, "generateAnaliticsYearlyRevenues", [$year]);
+    }
 }

@@ -13,6 +13,8 @@ import RankRoomsByReservationRating from "../global_components/charts/hotelRanki
 import ReservationCountByMonth from "../global_components/charts/hotelRankingTables/reservationCountByMonth";
 import ReservationCountByYear from "../global_components/charts/hotelRankingTables/reservationCountByYear";
 import Image from "next/image";
+import RevenueByYear from "../global_components/charts/hotelRankingTables/revenueByYear";
+import RevenueByMonth from "../global_components/charts/hotelRankingTables/revenueByMonth";
 
 export default function statsPage(){
 
@@ -55,6 +57,17 @@ export default function statsPage(){
                 <div className="part" style={{maxHeight:"600px", overflow:"none"}}>
                     <h4 className="partHeaders">Hotel yearly Reservations frequency</h4>
                 <ReservationCountByYear/>
+                </div>
+
+                <div className="part" style={{maxHeight:"600px", overflow:"none"}}>
+                    <h4 className="partHeaders">Hotels yearly revenue</h4>
+                <RevenueByYear/>
+                </div>
+
+
+                <div className="part" style={{maxHeight:"600px", overflow:"none"}}>
+                    <h4 className="partHeaders">Hotel Monthly revenue</h4>
+                <RevenueByMonth/>
                 </div>
             </div>
         </div>

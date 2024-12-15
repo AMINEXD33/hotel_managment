@@ -79,6 +79,8 @@ Route::post('/classedRoomsByReservationsRating', [ReservationsController::class,
 Route::post('/reservationsCountByYear', [ReservationsController::class, 'reservationsCountByYear'])->middleware('auth:sanctum');
 Route::post('/reservationsCountByMonth', [ReservationsController::class, 'reservationsCountByMonth'])->middleware('auth:sanctum');
 
+Route::post('/generateAnaliticsMounthlyRevenues', [ReservationsController::class, 'generateAnaliticsMounthlyRevenues'])->middleware('auth:sanctum');
+Route::post('/generateAnaliticsYearlyRevenues', [ReservationsController::class, 'generateAnaliticsYearlyRevenues'])->middleware('auth:sanctum');
 
 // utility
 Route::get('/getAvailableYears', [ReservationsController::class, 'getAvailableYears'])->middleware('auth:sanctum');

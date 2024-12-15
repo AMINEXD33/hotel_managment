@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import {
-  API_reservationsCountByMonth,
+    API_generateAnaliticsYearlyRevenues,
   API_availableYears,
   API_getHotelsLite
 } from "../../../../../endpoints/endpoints";
@@ -9,27 +9,27 @@ import "../ranktables.css";
 import massCall from "@/app/massCall";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
-
 import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-export default function reservationCountByMonth({}) {
+
+
+  
+export default function RevenueByYear({}) {
   let [dataYear, setDataYear] = useState(NaN);
-  let [dataHotel, setDataHotel] = useState(NaN);
   let [componentData, setComponentData] = useState([]);
-  let [hotelsOptions, setHotelsOptions] = useState([]);
   let [yearsOptions, setYearsOptions] = useState([]);
   
   useEffect(() => {
-    console.log("data year", dataYear, "data hotel", dataHotel);
-    if (!Number.isInteger(Number(dataYear)) || !Number.isInteger(Number(dataHotel))) {
+    console.log("data year", dataYear);
+    if (!Number.isInteger(Number(dataYear))) {
       return;
     }
     console.log(dataYear);
     let promises = massCall([
       {
-        url: API_reservationsCountByMonth(),
+        url: API_generateAnaliticsYearlyRevenues(),
         method: "POST",
-        body: { hotel_id: dataHotel , year: dataYear},
+        body: { year: dataYear},
       },
     ]);
     promises
@@ -45,27 +45,17 @@ export default function reservationCountByMonth({}) {
         }
       })
       .catch();
-  }, [dataYear, dataHotel]);
+  }, [dataYear]);
 
   useEffect(() => {
     let promises = massCall([
-      { url: API_getHotelsLite(), method: "GET" },
       { url: API_availableYears(), method: "GET" },
     ]);
     promises
       .then(async (promises) => {
-        let promis1 = promises[0];
-        let promis2 = promises[1];
-        if (promis1.status === "fulfilled") {
-          let data = await promis1.value.json();
-          if (Array.isArray(data)) {
-            setHotelsOptions(data);
-          } else {
-            console.warn("the data is not an array then it's not valid");
-          }
-        }
-        if(promis2.status === "fulfilled"){
-          let data = await promis2.value.json();
+        let promis = promises[0];
+        if(promis.status === "fulfilled"){
+          let data = await promis.value.json();
           data = data.reservations;
           console.warn("damn data .>>>", data);
           if (Array.isArray(data)) {
@@ -82,26 +72,6 @@ export default function reservationCountByMonth({}) {
 
   return (
     <>
-    {/* hotel selector */}
-      <Form.Select
-        aria-label="Default select 
-      example"
-        style={{ width: "30%", marginBottom: "5px" }}
-        onChange={(e) => {
-          setDataHotel(e.target.value);
-        }}
-      >
-        <option value={null}>select hotel</option>
-        {hotelsOptions.map((value, index) => {
-          console.log("here", value);
-          return (
-            <option key={"hotelID" + index} value={value.id}>
-              {value.id}{" "+value.name}
-            </option>
-          );
-        })}
-      </Form.Select>
-
       {/* years selector */}
       <Form.Select
         aria-label="Default select 
@@ -122,7 +92,7 @@ export default function reservationCountByMonth({}) {
         })}
       </Form.Select>
 
-      {Number.isInteger(Number(dataYear)) && Number.isInteger(Number(dataHotel)) 
+      {Number.isInteger(Number(dataYear)) 
         ? (
           <BarChart
             width={500}
@@ -136,11 +106,11 @@ export default function reservationCountByMonth({}) {
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
+            <XAxis dataKey="name"/>
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="reservations" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
+            <Bar dataKey="revenue" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
           </BarChart>
       ) : (
         <div className="noHotelSElected">

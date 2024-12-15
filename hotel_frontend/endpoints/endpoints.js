@@ -41,6 +41,15 @@ export function API_reservationCountByYear(){
 export function API_reservationsCountByMonth(){
     return(base.concat("/reservationsCountByMonth"));
 }
+
+export function API_generateAnaliticsYearlyRevenues(){
+    return(base.concat("/generateAnaliticsYearlyRevenues"));
+}
+export function API_generateAnaliticsMonthlyRevenues(){
+    return(base.concat("/generateAnaliticsMounthlyRevenues"));
+}
+
+
 export function API_availableYears(){
     return(base.concat("/getAvailableYears"));
 }

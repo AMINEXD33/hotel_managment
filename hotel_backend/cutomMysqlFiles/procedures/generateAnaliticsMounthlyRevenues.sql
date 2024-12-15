@@ -1,35 +1,65 @@
 DROP PROCEDURE IF EXISTS generateAnaliticsMounthlyRevenues;
 
 
-CREATE PROCEDURE generateAnaliticsMounthlyRevenues()
+CREATE PROCEDURE generateAnaliticsMounthlyRevenues(IN HOTEL_ INT, IN YEAR_ INT)
 BEGIN
-    WITH query1 AS
-             (SELECT YEAR(reservations.check_in)  AS `year`,
-                     MONTH(reservations.check_in) AS `month`,
-                     COUNT(reservations.id)       AS `month_total_reservation_count`,
-                     SUM(rooms.price)             AS `month_total_revenue`
-              FROM reservations
-                       INNER JOIN rooms ON rooms.id = reservations.id_room
-              GROUP BY YEAR(reservations.check_in), MONTH(reservations.check_in)),
-         query2 AS
-             (SELECT YEAR(historique_reservations.check_in)  AS `year`,
-                     MONTH(historique_reservations.check_in) AS `month`,
-                     COUNT(historique_reservations.id)       AS `month_total_reservation_count`,
-                     SUM(rooms.price)                        AS `month_total_revenue`
-              FROM historique_reservations
-                       INNER JOIN rooms ON rooms.id = historique_reservations.id_room
-              GROUP BY YEAR(historique_reservations.check_in), MONTH(historique_reservations.check_in))
-    SELECT tb1.year AS `year`,
-           tb1.month AS `month`,
-           SUM(tb1.month_total_reservation_count) AS `month_total_reservation_count`,
-           SUM(tb1.month_total_revenue) AS `month_total_revenue`
-    FROM (SELECT *
-          FROM query1
-          UNION ALL
-          SELECT *
-          FROM query2) AS tb1
-    GROUP BY tb1.year,
-             tb1.month;
+    with s1 as (
+        SELECT
+            reservations.id as `reservation_id`,
+            reservations.id_room,
+            id_customer,
+            check_in,
+            check_out,
+            check_out_note,
+            check_in_note,
+            room_stars,
+            hotel_stars,
+            total_price
+        FROM reservations
+                 INNER JOIN  rooms ON rooms.id = reservations.id_room
+        WHERE id_hotel = HOTEL_ AND YEAR(check_in) = YEAR_
+        UNION ALL
+        SELECT
+            historique_reservations.id as `reservation_id`,
+            historique_reservations.id_room,
+            id_customer,
+            check_in,
+            check_out,
+            check_out_note,
+            check_in_note,
+            room_stars,
+            hotel_stars,
+            total_price
+        FROM historique_reservations
+        INNER JOIN  rooms ON rooms.id = historique_reservations.id_room
+        WHERE id_hotel = HOTEL_ AND YEAR(check_in) = YEAR_
+    ),
+         calendar AS (
+             SELECT 1 AS month UNION ALL
+             SELECT 2 UNION ALL
+             SELECT 3 UNION ALL
+             SELECT 4 UNION ALL
+             SELECT 5 UNION ALL
+             SELECT 6 UNION ALL
+             SELECT 7 UNION ALL
+             SELECT 8 UNION ALL
+             SELECT 9 UNION ALL
+             SELECT 10 UNION ALL
+             SELECT 11 UNION ALL
+             SELECT 12
+         )
+    SELECT
+        calendar.month,
+        IFNULL(CAST(SUM(s1.total_price) AS DOUBLE(10, 2)), 0) `revenue`
+    FROM calendar
+             LEFT JOIN s1
+                       ON MONTH(s1.check_in) = calendar.month
+    GROUP BY calendar.month
+    ORDER BY calendar.month;
 END;
 
-# CALL generateAnaliticsMounthlyRevenues();
+
+
+
+
+

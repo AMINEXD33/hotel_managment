@@ -21,7 +21,7 @@ begin
     INNER JOIN hotels
     ON hotels.id = rooms.id_hotel
     WHERE YEAR(s1.check_in) = YEAR_
-    GROUP BY YEAR(s1.check_in), id_hotel
+    GROUP BY YEAR(s1.check_in), id_hotel, hotels.name
     ORDER BY YEAR(s1.check_in) ;
 end;
 

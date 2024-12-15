@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-
 import {
-  API_reservationsCountByMonth,
+  API_generateAnaliticsMonthlyRevenues,
   API_availableYears,
   API_getHotelsLite
 } from "../../../../../endpoints/endpoints";
@@ -9,10 +8,10 @@ import "../ranktables.css";
 import massCall from "@/app/massCall";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Spinner } from "react-bootstrap";
 
-import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
-export default function reservationCountByMonth({}) {
+export default function RevenueByMonth({}) {
   let [dataYear, setDataYear] = useState(NaN);
   let [dataHotel, setDataHotel] = useState(NaN);
   let [componentData, setComponentData] = useState([]);
@@ -27,7 +26,7 @@ export default function reservationCountByMonth({}) {
     console.log(dataYear);
     let promises = massCall([
       {
-        url: API_reservationsCountByMonth(),
+        url: API_generateAnaliticsMonthlyRevenues(),
         method: "POST",
         body: { hotel_id: dataHotel , year: dataYear},
       },
@@ -124,7 +123,7 @@ export default function reservationCountByMonth({}) {
 
       {Number.isInteger(Number(dataYear)) && Number.isInteger(Number(dataHotel)) 
         ? (
-          <BarChart
+            <LineChart
             width={500}
             height={300}
             data={componentData}
@@ -140,8 +139,8 @@ export default function reservationCountByMonth({}) {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="reservations" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
-          </BarChart>
+            <Line type="monotone" dataKey="revenue" stroke="#8884d8" activeDot={{ r: 8 }} />
+          </LineChart>
       ) : (
         <div className="noHotelSElected">
           <Alert variant={"secondary"}>Please select a year</Alert>
