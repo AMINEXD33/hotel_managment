@@ -143,7 +143,7 @@ export default function RevenueByMonth({}) {
           </LineChart>
       ) : (
         <div className="noHotelSElected">
-          <Alert variant={"secondary"}>Please select a year</Alert>
+          <Alert variant={"primary"}>Please select a year</Alert>
         </div>
       )}
     </>

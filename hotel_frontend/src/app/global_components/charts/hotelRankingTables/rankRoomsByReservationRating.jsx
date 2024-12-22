@@ -96,7 +96,7 @@ export default function RankRoomsByReservationRating({}) {
         </tbody>
       </Table>:
       <div className="noHotelSElected">
-            <Alert variant={"secondary"}>
+            <Alert variant={"primary"}>
             Please select a Hotel
             </Alert>
       </div>

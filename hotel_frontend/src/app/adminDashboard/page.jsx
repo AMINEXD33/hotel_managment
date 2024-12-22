@@ -1,18 +1,12 @@
 "use client";
 import SideBar from "@/app/global_components/sidebar/sidebar";
 import "./adminDash.css";
-import PieChart from "../global_components/charts/pieChart";
 import RankHotelByReservationCount from "../global_components/charts/hotelRankingTables/rankHotelsByReservationCount";
-import massCall from "../massCall";
-import { useEffect } from "react";
-import { API_RankHotelsByReservationCount } from "../../../endpoints/endpoints";
-import { API_classedRoomsByReservationsCount } from "../../../endpoints/endpoints";
 import RankHotelsByReservationRating from "../global_components/charts/hotelRankingTables/rankHotelsByReservationRating";
 import RankRoomsByReservationCount from "../global_components/charts/hotelRankingTables/rankRoomsByReservationCount";
 import RankRoomsByReservationRating from "../global_components/charts/hotelRankingTables/rankRoomsByReservationRating";
 import ReservationCountByMonth from "../global_components/charts/hotelRankingTables/reservationCountByMonth";
 import ReservationCountByYear from "../global_components/charts/hotelRankingTables/reservationCountByYear";
-import Image from "next/image";
 import RevenueByYear from "../global_components/charts/hotelRankingTables/revenueByYear";
 import RevenueByMonth from "../global_components/charts/hotelRankingTables/revenueByMonth";
 

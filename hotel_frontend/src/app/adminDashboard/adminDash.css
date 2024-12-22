@@ -7,6 +7,7 @@
     width: 100%;
     padding: 10px;
     overflow-y: hidden;
+    overflow-x: hidden;
 }
 .part{
     width: 100%;
@@ -62,3 +63,39 @@
 .part::-webkit-scrollbar-thumb:hover {
     background: #555; /* Darker color on hover */
   }
+.managmentHeader{
+  color: black;
+}
+.dataDisplayer{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+.boxActionIconModify,.boxActionIconDelete{
+  border-radius: 100%;
+  padding: 4px;
+  cursor: pointer;
+} 
+.boxActionIconModify:hover{
+  animation: modIconAnim 0.3s alternate forwards ease-in-out;
+}
+.boxActionIconDelete:hover{
+  animation: delIconAnim 0.3s alternate forwards ease-in-out;
+}
+
+@keyframes modIconAnim {
+  from{
+    background-color: transparent;
+  }to{
+    background-color: rgba(0, 44, 126, 0.219);
+  }
+}
+@keyframes delIconAnim {
+  from{
+    background-color: transparent;
+  }to{
+    background-color: rgba(255, 0, 0, 0.212);
+  }
+}

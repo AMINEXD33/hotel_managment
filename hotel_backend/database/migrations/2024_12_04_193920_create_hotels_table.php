@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('hotels', function (Blueprint $table) {
             $table->id();
-            $table->string('name', length: 200)->nullable(false);;
-            $table->string('address', length: 400)->nullable(false);;
+            $table->string('name', length: 200)->nullable(false);
+            $table->string('address', length: 400)->nullable(false);
             $table->text('description')->nullable(false);;
             $table->string('email', length: 200)->nullable(false);
             $table->string("phone", length: 200)->nullable(false);

@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\HotelsPhotos;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class Hotels extends Model
 {
@@ -19,19 +22,69 @@ class Hotels extends Model
         'city',
     ];
     static function getAllHotels(){
-        return Hotels::all();
+        $data = [];
+        $hotels = Hotels::query()
+            ->leftJoin('hotels_photos', 'hotels_photos.hotel_id', '=', 'hotels.id')
+            ->distinct()
+            ->get(['hotels.*']);
+
+        foreach ($hotels as $hotel) {
+            $tmpdata = [];
+            $tmpphotos = HotelsPhotos::query()->where('hotel_id', $hotel->id)->get();
+            $tmpdata["photos"] = $tmpphotos;
+            $tmpdata["hotel"] = $hotel;
+
+            array_push($data, $tmpdata);
+        }
+
+        return $data;
     }
 
     static function getHotelById(int $id){
-        return Hotels::query()->find($id);
+        $photos = HotelsPhotos::query()->where('hotel_id', $id)->get();
+        $hotel = Hotels::query()->find($id);
+
+        return [["photos"=>$photos, "hotel"=>$hotel]];
     }
 
     static function getHotelsByName(string $name){
-        return Hotels::query()->where('name', $name)->get();
+        $data = [];
+        $hotels = Hotels::query()
+            ->leftJoin('hotels_photos', 'hotels_photos.hotel_id', '=', 'hotels.id')
+            ->where('hotels.name', 'like', "%$name%")
+            ->distinct()
+            ->get(['hotels.*']);
+
+        foreach ($hotels as $hotel) {
+            $tmpdata = [];
+            $tmpphotos = HotelsPhotos::query()->where('hotel_id', $hotel->id)->get();
+            $tmpdata["photos"] = $tmpphotos;
+            $tmpdata["hotel"] = $hotel;
+
+            array_push($data, $tmpdata);
+        }
+
+        return $data;
     }
 
     static function getHotelsByCity(string $city){
-        return Hotels::query()->where('city', $city)->get();
+        $data = [];
+        $hotels = Hotels::query()
+            ->leftJoin('hotels_photos', 'hotels_photos.hotel_id', '=', 'hotels.id')
+            ->where('hotels.city', '=', $city)
+            ->distinct()
+            ->get(['hotels.*']);
+
+        foreach ($hotels as $hotel) {
+            $tmpdata = [];
+            $tmpphotos = HotelsPhotos::query()->where('hotel_id', $hotel->id)->get();
+            $tmpdata["photos"] = $tmpphotos;
+            $tmpdata["hotel"] = $hotel;
+
+            array_push($data, $tmpdata);
+        }
+
+        return $data;
     }
 
 
@@ -42,7 +95,10 @@ class Hotels extends Model
 
 
     static function getHotelsByEmail(string $email){
-        return Hotels::query()->where('email', $email)->get();
+        return Hotels::query()
+            ->join('hotels_photos', 'hotels_photos.id','=', 'hotels.id')
+            ->where('email', $email)->get();
+
     }
 
     static function getHotelsSortedByName(){

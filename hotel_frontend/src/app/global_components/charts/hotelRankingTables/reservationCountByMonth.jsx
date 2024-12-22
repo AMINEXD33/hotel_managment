@@ -144,7 +144,7 @@ export default function reservationCountByMonth({}) {
           </BarChart>
       ) : (
         <div className="noHotelSElected">
-          <Alert variant={"secondary"}>Please select a year</Alert>
+          <Alert variant={"primary"}>Please select a year</Alert>
         </div>
       )}
     </>

@@ -19,6 +19,10 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+
+}
+body {
+  overflow-y:scroll;
 }
 
 body {
@@ -69,4 +73,33 @@ a {
 /* Hover effect on the thumb */
 ::-webkit-scrollbar-thumb:hover {
   background: #555; /* Darker color on hover */
+}
+
+
+.ver{
+  color: green;
+}
+.notver{
+  color: red;
+  animation: shake 0.3s alternate forwards ease-in-out 2;
+  text-decoration: underline;
+}
+
+.verBack{
+  border: 1px solid green;
+  outline:  1px solid green;
+}
+.notVerBack{
+  border: 1px solid red;
+  outline:  1px solid red;
+}
+
+.alertCustom{
+  max-width: 300px;
+  height: auto;
+  position: fixed;
+  z-index: 10;
+  left: 50%;
+  top: 10px;
+  transform: translateX(-50%);
 }

@@ -11,14 +11,7 @@
     align-items: center;
     line-height: 17px;
 }
-.ver{
-    color: green;
-}
-.notver{
-    color: red;
-    animation: shake 0.3s alternate forwards ease-in-out 2;
-    text-decoration: underline;
-}
+
 @keyframes shake {
     0%{
         transform: translateX(0px);

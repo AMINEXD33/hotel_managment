@@ -32,7 +32,7 @@ export default function SideBar({
           >
             <Nav.Link href="/adminDashboard" active={true}>Statistics</Nav.Link>
             <NavDropdown title="Managment" id="navbarScrollingDropdown">
-              <NavDropdown.Item href="#action3">
+              <NavDropdown.Item href="/adminDashboard/hotelsManagment">
                 Hotel managment
               </NavDropdown.Item>
               <NavDropdown.Item href="#action4">

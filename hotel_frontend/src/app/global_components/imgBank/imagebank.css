@@ -1,0 +1,29 @@
+.photobankCOnt{
+    display: flex;
+    gap: 5px;
+    overflow-x: auto;
+    padding: 10px;
+}
+/* Entire scrollbar */
+.photobankCOnt::-webkit-scrollbar {
+    width: 5px; /* Width of the scrollbar */
+    height: 5px; /* Height of the scrollbar (horizontal) */
+  }
+  
+  /* Scrollbar thumb */
+.photobankCOnt::-webkit-scrollbar-thumb {
+    background-color: #303030; /* Color of the thumb */
+    border-radius: 6px; /* Rounded corners */
+    border: 2px solid transparent; /* Padding around thumb */
+  }
+  
+  /* Scrollbar track */
+.photobankCOnt::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the track */
+    border-radius: 6px; /* Rounded corners for the track */
+  }
+  
+  /* Hover effect on the thumb */
+.photobankCOnt::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Darker color on hover */
+  }

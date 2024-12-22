@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\ReservationsController;
 use App\Http\Controllers\RoomsController;
+use \App\Http\Controllers\HotelsPhotosController;
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -49,11 +51,11 @@ Route::post('/modifyHotel', [HotelsController::class, 'modifyHotel'])->middlewar
 
 Route::get('/getAllHotelsLite', [HotelsController::class, 'getAllHotelsLite']);
 Route::get('/getAllHotels', [HotelsController::class, 'getAllHotels']);
-Route::get('/getHotelById', [HotelsController::class, 'getHotelById']);
-Route::get('/getHotelByName', [HotelsController::class, 'getHotelByName']);
-Route::get('/getHotelsByCity', [HotelsController::class, 'getHotelsByCity']);
+Route::post('/getHotelById', [HotelsController::class, 'getHotelById']);
+Route::post('/getHotelByName', [HotelsController::class, 'getHotelByName']);
+Route::post('/getHotelsByCity', [HotelsController::class, 'getHotelsByCity']);
 Route::get('/getHotelsByAddressLike', [HotelsController::class, 'getHotelsByAddressLike']);
-
+Route::get('/getAllCities', [HotelsController::class, 'getAllCities']);
 
 // CRUD rooms
 Route::post('/createRoom', [RoomsController::class, 'createRoom']);
@@ -84,3 +86,7 @@ Route::post('/generateAnaliticsYearlyRevenues', [ReservationsController::class, 
 
 // utility
 Route::get('/getAvailableYears', [ReservationsController::class, 'getAvailableYears'])->middleware('auth:sanctum');
+
+
+// hotels photos
+Route::post('/deleteHotelPhotoById', [HotelsPhotosController::class, 'deleteHotelPhotoById'])->middleware('auth:sanctum');

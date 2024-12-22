@@ -1,6 +1,6 @@
-var base = "https://localhost/api";
-var base2 = "https://localhost/sanctum/csrf-cookie";
-
+export var base = "https://localhost/api";
+export var base2 = "https://localhost/sanctum/csrf-cookie";
+export var photobase = "https://localhost/storage/";
 
 export function API_checkauth (){
     return (base.concat("/checkauth"));
@@ -58,4 +58,36 @@ export function API_availableYears(){
 
 export function API_getHotelsLite(){
     return(base.concat("/getAllHotelsLite"));
+}
+
+
+///// 
+
+export function API_getHotels(){
+    return(base.concat("/getAllHotels"));
+}
+
+export function API_getHotelsByName(){
+    return(base.concat("/getHotelByName"));
+}
+
+export function API_getHotelsById(){
+    return(base.concat("/getHotelById"));
+}
+
+export function API_getHotelsByCity(){
+    return(base.concat("/getHotelsByCity"));
+}
+
+export function API_getCities(){
+    return (base.concat("/getAllCities"));
+}
+
+
+export function API_modifyHotel(){
+    return (base.concat("/modifyHotel"));
+}
+
+export function API_deleteHotelPhotoId(){
+    return (base.concat("/deleteHotelPhotoById"));
 }

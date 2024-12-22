@@ -1,0 +1,79 @@
+.modifyPopUp{
+    background-color: rgb(255, 255, 255);
+    height: 100vh;
+    width: 100%;
+
+    z-index: 10;
+    padding: 20px;
+    padding-top: 0px;
+    /* animation: apear 0.3s alternate forwards ease-in-out; */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    justify-content: center;
+
+}
+
+@keyframes apear {
+    from{
+        opacity: 0.5;
+        transform: translateY(10px);
+    }to{
+        opacity: 1;
+        transform: translateY(0px);
+    }
+    
+}
+.modifyWindow{
+    display: flex;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    flex-direction: column;
+    max-width: 1250px;
+    align-self: center;
+    justify-self: center;
+    margin-top: 35px;
+    padding: 20px;
+    
+}
+.modifyWindow label{
+    color: rgba(0, 0, 0, 0.671);
+}
+.photoSlider{
+    width: 100%;
+    min-height: 700px;
+    max-height: 700px;
+    background-color: black;
+    border-radius: 10px;
+}
+.actions{
+    height: fit-content;
+    width: 100%;
+    background-color: rgba(127, 255, 212, 0);
+    padding: 10px;
+}
+.closePopup{
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    z-index: 2;
+    margin-right: 10px;
+}
+.deletePhoto{
+    position: absolute;
+    width: 100px;
+    height: 40px;
+    padding: 5px;
+    top: 10px;
+    left: calc((50% - 100px / 2));
+    opacity: 0.5;
+}
+
+.deletePhoto:hover{
+    opacity: 1;
+}

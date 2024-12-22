@@ -21,8 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->respond(function () {
+        $exceptions->respond(function ($exception) {
             // Return a JSON response for unauthenticated requests
-            return response()->json(['message' => 'Unauthorized'], 401);
+//            return response()->json(['message' => 'Unauthorized', "execprtion"=>$exception], 401);
+        return response($exception, 500);
         });
     })->create();
