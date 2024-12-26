@@ -2,65 +2,63 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\utils\AuthorityCheckers;
 use App\Http\Requests\Storerooms_photosRequest;
 use App\Http\Requests\Updaterooms_photosRequest;
-use App\Models\rooms_photos;
+use App\Models\HotelsPhotos;
 
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Rooms_photos;
 class RoomsPhotosController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+    public function deleteRoomPhotoById(Request $request): JsonResponse{
+        $session_id = Auth::id();
+        $user = User::query()->find($session_id);
+        $photoId = $request->get('photo_id');
+        if (!AuthorityCheckers::isAdmin($user)){
+            return response()->json(["message" => "Unauthorized"], 401);
+        }
+        if (!$photoId){
+            return response()->json(["message" => "No photo_id was provided"], 400);
+        }
+
+        $photo = Rooms_photos::query()->find($photoId);
+        if (!$photo){
+            return response()->json(["message" => "No photo with such id"], 400);
+        }
+        $err_queue = [];
+        try{
+            if (file_exists($photo->photo)) {
+                unlink($photo->photo); // Delete the file
+            }else{
+                $err_queue[] = "File does not exist";
+            }
+            $photo->delete();
+        }catch (\Exception $e){
+            return response()->json(["error" => "can't delete this photo"], 400);
+        }
+        return response()->json(["message"=>"photo was deleted !", "deleted"=>$err_queue], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    public function getRoomPhotosById(Request $request): JsonResponse{
+        $session_id = Auth::id();
+        $user = User::query()->find($session_id);
+        $roomId = $request->get('room_id');
+        if (!AuthorityCheckers::isAdmin($user)){
+            return response()->json(["message" => "Unauthorized"], 401);
+        }
+        if (!$roomId){
+            return response()->json(["message" => "No room_id was provided"], 400);
+        }
+        try{
+            $photo = Rooms_photos::query()->where("room_id",$roomId)->get();
+        }catch (\Exception $e){
+            return response()->json(["error" => "can't get photos", "accual_error"=>$e->getMessage()], 400);
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Storerooms_photosRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(rooms_photos $rooms_photos)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(rooms_photos $rooms_photos)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Updaterooms_photosRequest $request, rooms_photos $rooms_photos)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(rooms_photos $rooms_photos)
-    {
-        //
+        return response()->json($photo, 200);
     }
 }

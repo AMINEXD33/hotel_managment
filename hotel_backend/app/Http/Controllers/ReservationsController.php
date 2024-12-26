@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\utils\AuthorityCheckers;
 use App\Http\Requests\StorereservationsRequest;
 use App\Http\Requests\UpdatereservationsRequest;
-use App\Models\reservations;
+use App\Models\historique_reservations;
+use App\Models\Reservations;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -299,5 +300,54 @@ class ReservationsController extends Controller
             ], 422);
         }
         return $this->reservationsAdminBasse($request, "generateAnaliticsYearlyRevenues", [$year]);
+    }
+
+
+    public function getAllReservations(Request $request): JsonResponse{
+        $isuserAdmin = AuthorityCheckers::isUserAdmin();
+        if (!$isuserAdmin){
+            return response()->json(["error" => "Unauthorized"], 401);
+        }
+        $currentReservations = Reservations::query()
+            ->select(DB::raw("hotels.name as hotel_name, reservations.*, 'current' as type"))
+            ->join("rooms", "reservations.id_room", "=", "rooms.id")
+            ->join("hotels", "rooms.id_hotel", "=", "hotels.id");
+
+        $historicReservations = historique_reservations::query()
+            ->select(DB::raw("hotels.name as hotel_name, historique_reservations.*, 'old' as type"))
+            ->join("rooms", "historique_reservations.id_room", "=", "rooms.id")
+            ->join("hotels", "rooms.id_hotel", "=", "hotels.id");
+
+        $reservations = $currentReservations
+            ->unionAll($historicReservations)
+            ->orderBy("type")
+            ->get();
+        return response()->json($reservations, 200);
+    }
+
+
+    public function cancelReservationAdmin(Request $request): JsonResponse{
+        $isuserAdmin = AuthorityCheckers::isUserAdmin();
+        if (!$isuserAdmin){
+            return response()->json(["error" => "Unauthorized"], 401);
+        }
+        $reservationId = $request->json()->get('reservation_id');
+        $reservation = Reservations::query()->find($reservationId);
+        if (!$reservation){
+            return response()->json(["error" => "Reservation not found"], 404);
+        }
+        $customer = User::query()->find($reservation->id_customer);
+        if (!$customer){
+            return response()->json(["error" => "Customer not found"], 404);
+        }
+        // do something here , send an email or what ever
+
+        ////
+        try{
+            $reservation->delete();
+        }catch (\Exception $e){
+            return response()->json(["error" => $e->getMessage()], 500);
+        }
+        return response()->json(["success" => "Reservation has been cancelled"], 200);
     }
 }

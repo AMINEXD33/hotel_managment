@@ -91,3 +91,43 @@ export function API_modifyHotel(){
 export function API_deleteHotelPhotoId(){
     return (base.concat("/deleteHotelPhotoById"));
 }
+
+export function API_deleteHotelById(){
+    return (base.concat("/deleteHotel"));
+}
+
+export function API_createHotel(){
+    return (base.concat("/createHotel"));
+}
+
+export function API_getAllRooms(){
+    return (base.concat("/getAllRooms"));
+}
+
+export function API_modifyRoom(){
+    return (base.concat("/updateRoom"))
+}
+
+export function API_getRoomPhotosById(){
+    return (base.concat("/getRoomPhotosById"));
+}
+
+export function API_deleteRoomPhotoById(){
+    return (base.concat("/deleteRoomPhotoById"));
+}
+
+export function API_deleteRoomById(){
+    return (base.concat("/deleteRoom"));
+}
+
+export function API_createRoom(){
+    return (base.concat("/createRoom"));
+}
+
+export function API_getReservations(){
+    return(base.concat("/getAllReservations"));
+}
+
+export function API_CalcellReservation(){
+    return(base.concat("/cancelReservationAdmin"));
+}

@@ -35,11 +35,11 @@ export default function SideBar({
               <NavDropdown.Item href="/adminDashboard/hotelsManagment">
                 Hotel managment
               </NavDropdown.Item>
-              <NavDropdown.Item href="#action4">
+              <NavDropdown.Item href="/adminDashboard/roomsManagment">
                 Rooms managment
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">
+              <NavDropdown.Item href="/adminDashboard/reservationsManagment">
                 Reservations managment
               </NavDropdown.Item>
               <NavDropdown.Item href="#action5">

@@ -33,8 +33,7 @@ class Hotels extends Model
             $tmpphotos = HotelsPhotos::query()->where('hotel_id', $hotel->id)->get();
             $tmpdata["photos"] = $tmpphotos;
             $tmpdata["hotel"] = $hotel;
-
-            array_push($data, $tmpdata);
+            $data[] = $tmpdata;
         }
 
         return $data;

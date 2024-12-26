@@ -14,10 +14,8 @@ import formChecker from "../../formChecker";
 const websitesRegex =
   /(https?:\/\/)?(www\.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)|(https?:\/\/)?(www\.)?(?!ww)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 import { 
-  API_getCities, 
-  API_modifyHotel,
-  API_deleteHotelPhotoId,
-  photobase
+    API_getHotelsLite, 
+    API_createRoom,
 } from "../../../../endpoints/endpoints";
 import massCall from "@/app/massCall";
 import Confirmation from "../confirmation/confirmation";
@@ -61,9 +59,8 @@ function modifyData(...args){
   const setErrorAlert = args[0];
   const setSuccessAlert = args[1];
   const formData = args[2];
-  const hotelId = args[3];
-  const photobank = args[4];
-  
+  const photobank = args[3];
+  const setAddPop = args[4];
 
   const formDataAll = new FormData();
   
@@ -75,23 +72,20 @@ function modifyData(...args){
       }
   });
 
-
-  formDataAll.append('hotel_id', hotelId);
-  formDataAll.append('name', formData.hotelName.value);
-  formDataAll.append('address', formData.address.value);
   formDataAll.append('description', formData.description.value);
-  formDataAll.append('email', formData.email.value);
-  formDataAll.append('phone', formData.phone.value);
-  formDataAll.append('website', formData.website.value);
-  formDataAll.append('city', formData.city.value);
-
+  formDataAll.append('baths', formData.baths.value);
+  formDataAll.append('beds', formData.beds.value);
+  formDataAll.append('price', formData.price.value);
+  formDataAll.append('suites', formData.suites.value);
+  formDataAll.append('type', formData.type.value);
+  formDataAll.append('id_hotel', formData.id_hotel.value);
 
   for (let [key, value] of formDataAll.entries()) {
     console.log(`${key}:`, value);
   }
   console.warn("sent post data = ", formDataAll);
 
-  fetch(API_modifyHotel(), {
+  fetch(API_createRoom(), {
     method:"POST",
     headers:{
       // 'Content-Type': 'multipart/form-data',
@@ -106,106 +100,54 @@ function modifyData(...args){
       setSuccessAlert({state:true, message:"hotel data was modified"});
     }
     else{
-      const data_ = await data.json();
-      const error = data.error;
-      const message = data.message;
-      if (error){
-        setErrorAlert({state:true, message:error})
-      }
-      else if (message){
-        setErrorAlert({state:true, message:message})
-      }
+        setErrorAlert({state:true, message:"can't create this room"})
+
     }
   })
   .catch(err=>{
-    setErrorAlert({state:true, message:"can't modify this hotel"})
+
+    setErrorAlert({state:true, message:"can't create this room"})
   })
   const st = setTimeout(()=>{
     setSuccessAlert({state:false, message:""});
-    setSuccessAlert({state:false, message:""});
+    setErrorAlert({state:false, message:""});
     clearTimeout(st);
   }, 1500);
+//   setAddPop({state:false});
 }
 
-function deletePhoto(...args){
-  const setErrorAlert = args[0];
-  const setSuccessAlert = args[1];
-  const imgId = args[2];
-  const modPopUp = args[3];
-  const setModPopUp = args[4];
-
-  const deletePhotoCall = { url: API_deleteHotelPhotoId(), method: "POST" , body:{'photo_id':imgId}};
-  let promises = massCall([deletePhotoCall]);
-  promises
-    .then(async (promises) => {
-      let promis = promises[0];
-      if (promis.status === "fulfilled") {
-        let status = promis.value.status;
-        if (status === 200){
-          setSuccessAlert({state:true, message:"photo was deleted"});
-        }
-      }
-    })
-    .catch((err) => {
-      setErrorAlert({state:true, message:"can't delete this photo"})
-    });
-    const st = setTimeout(()=>{
-      setSuccessAlert({state:false, message:""});
-      setErrorAlert({state:false, message:""});
-      clearTimeout(st);
-    }, 1500);
-    
-    // reset to rerender after modification
-    setModPopUp({
-      state: false,
-      id:NaN,
-      hotelData:{}
-    })
-}
-export default function ModifyPopUp({ 
-  modPopUp, 
-  setModPop,
+export default function AddPopupRooms({ 
+addPopUp, 
+setAddPop,
   setErrorAlert,
   setSuccessAlert,
 }) {
   // form data
   const [formData, setFormData] = useState({
-    hotelName: { key: "hotelName", value: modPopUp.hotelData.hotel.name, element: null, regex: /^.*$/ },
+    roomId: { key: "roomId", value: "", element: null, regex: /^[\s\S]*$/ },
     description: {
       key: "description",
-      value: modPopUp.hotelData.hotel.description,
+      value: "",
       element: null,
-      regex: /^.*$/,
+      regex: /^[\s\S]*$/,
     },
-    email: {
-      key: "email",
-      value: modPopUp.hotelData.hotel.email,
-      element: null,
-      regex: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
-    },
-    phone: { key: "phone", value: modPopUp.hotelData.hotel.phone, element: null, regex: /^[0-9]{1,}$/ },
-    website: { key: "website", value: modPopUp.hotelData.hotel.website, element: null, regex: websitesRegex },
-    city: { key: "city", value: modPopUp.hotelData.hotel.city, element: null, regex: /^.*$/ },
-    address:{key: "address", value: modPopUp.hotelData.hotel.address, element:null, regex: /^.*$/}
+    baths: { key: "baths", value: "", element: null, regex: /^[0-9]{1,}$/ },
+    beds: { key: "beds", value: "", element: null, regex: /^[0-9]{1,}$/ },
+    price: { key: "price", value: "", element: null, regex: /^[0-9.]{1,}$/ },
+    suites: {key: "suites", value: "", element: null, regex: /^(normal|junior|executive|presidential)*$/},
+    type: {key: "type", value: "", element: null, regex: /^(single|double|triple|quadruple)$/},
+    id_hotel: {key: "id_hotel", value:"", element: null, regex: /^[0-9]{1,}$/}
   });
   // photoBank
   const [photoBank, setPhotoBank] = useState([]);
   // for show photo sources
   const [forShow, setForShow] = useState([]);
-  // cities
-  const [cities, setCitiesData] = useState([]);
-  
+
   // button state
   const [btnState, setBtnState] = useState(false);
 
-  // confirmation visiblity for img deletion
-  const [confirmVisible1, setConfirmVisible1] = useState(false);
-
   // confirmation visiblity for modifying data
   const [confirmVisible2, setConfirmVisible2] = useState(false);
-
-  // photo id that will be deleted
-  const [photoId, setPhotoId] = useState(NaN);
 
   // flags for the state of each entry
   const [allDataIsValid, setAllDataIsValid] = useState({
@@ -217,14 +159,16 @@ export default function ModifyPopUp({
     city: true,
   });
 
-
+  // HOTELS
+  const [hotelsNames, setHotelsNames] = useState([]);
   // for visual perposes we're setting the overflow of this page to hidden
   // i couldn't find a work around this one
   useEffect(() => {
     const dc = document.getElementsByTagName("html");
     dc[0].style.overflowY = "hidden";
-    const callCities = { url: API_getCities(), method: "GET" };
-    let promises = massCall([callCities]);
+    setBtnState(true);
+    const callHotels = { url: API_getHotelsLite(), method: "GET" };
+    let promises = massCall([callHotels]);
     promises
       .then(async (promises) => {
         let promis = promises[0];
@@ -232,7 +176,7 @@ export default function ModifyPopUp({
           let data = await promis.value.json();
           console.warn("damn data .>>>", data);
           if (Array.isArray(data)) {
-            setCitiesData(data);
+            setHotelsNames(data);
           } else {
             console.warn("the data is not an array then it's not valid");
           }
@@ -241,6 +185,7 @@ export default function ModifyPopUp({
       .catch((err) => {
         console.warn("can't get hotels lite liste", err);
       });
+    
   }, []);
 
   // check the validity of the form when the formData changes
@@ -281,31 +226,18 @@ export default function ModifyPopUp({
     <div className="modifyPopUp">
       <CloseButton
         onClick={() => {
-          setModPop({ ...modPopUp, state: false, id: NaN });
+            setAddPop({ ...addPopUp, state: false});
         }}
         color="red"
         style={{ backgroundColor: "red" }}
         className="closePopup"
       />
 
-      {/**confirmation for deleting a photo */}
-      {confirmVisible1 && 
-        <Confirmation
-          confirmationTitle={"are you sure you want to delete this photo"}
-          confirmationBodyText={"deleting this photo will result in it's permenent lose!."}
-          onYesCallBack={(...args)=>{deletePhoto(...args)}}
-          onNoCallBack={(...args)=>{console.log("no")}}
-          setVisibleState={setConfirmVisible1}
-          args={[setErrorAlert, setSuccessAlert, photoId, modPopUp ,setModPop]}
-          yesButtonText={"delete"}
-          noButtonText={"cancel"}
-        />
-      }
-      {/**confirmation for midifying data */}
+      {/**confirmation for adding data */}
         {confirmVisible2 && 
         <Confirmation
-          confirmationTitle={"are you sure you want to modify this data"}
-          confirmationBodyText={"modifying this data means that the old values are forgoten"}
+          confirmationTitle={"are you sure you want to create this hotel"}
+          confirmationBodyText={""}
           onYesCallBack={(...args)=>{modifyData(...args)}}
           onNoCallBack={(...args)=>{console.log("no")}}
           setVisibleState={setConfirmVisible2}
@@ -313,46 +245,15 @@ export default function ModifyPopUp({
             setErrorAlert, 
             setSuccessAlert, 
             formData, 
-            modPopUp.hotelData.hotel.id,
-            photoBank
+            photoBank,
+            setAddPop
           ]}
-          yesButtonText={"modify"}
+          yesButtonText={"create"}
           noButtonText={"cancel"}
         />
       }
       <div className="modifyWindow">
-        <Carousel
-          className="photoSlider"
-          style={{ display: "flex", justifyContent: "center" }}
-        >
-          {modPopUp.hotelData.photos.map((val, index) => {
-            const element = <Carousel.Item key={"hotelid" + index}>
-                <div>
-                  <Button 
-                  onClick={()=>{
-                    setPhotoId(val.id);
-                    setConfirmVisible1(true);
-                  }}
-                  variant="danger" className="deletePhoto">
-                    DELETE
-                  </Button>
-                </div>
-                <Image
-                  src={photobase+val.photo}
-                  height={700}
-                  width={700}
-                  alt="ypp"
-                  layout="responsive"
-                  style={{ borderRadius: "10px" }}
-                />
-                <Carousel.Caption></Carousel.Caption>
-              </Carousel.Item>
-            
-
-            return (element);
-          })}
-        </Carousel>
-
+        
         <ImageBank 
         forShowPhotos={forShow}
         setForShowPhotos={setForShow}
@@ -361,55 +262,47 @@ export default function ModifyPopUp({
         />
 
         <div className="actions">
-          <FloatingLabel controlId="floatingInput" label="id" className="mb-3">
+          <FloatingLabel
+            controlId="floatingInput"
+            label="baths"
+            className="mb-3"
+          >
             <Form.Control
               type="number"
-              disabled
-              defaultValue={modPopUp.hotelData.hotel.id}
+              onChange={(e) => {
+                setFormData({
+                  ...formData,
+                  ["baths"]: {
+                    key: "baths",
+                    value: e.target.value,
+                    element: e.target,
+                    regex: formData["baths"].regex,
+                  },
+                });
+              }}
+              defaultValue={""}
             />
           </FloatingLabel>
 
           <FloatingLabel
             controlId="floatingInput"
-            label="hotel name"
+            label="beds"
             className="mb-3"
           >
             <Form.Control
-              type="text"
+              type="number"
               onChange={(e) => {
                 setFormData({
                   ...formData,
-                  ["hotelName"]: {
-                    key: "hotelName",
+                  ["beds"]: {
+                    key: "beds",
                     value: e.target.value,
                     element: e.target,
-                    regex: formData["hotelName"].regex,
+                    regex: formData["beds"].regex,
                   },
                 });
               }}
-              defaultValue={modPopUp.hotelData.hotel.name}
-            />
-          </FloatingLabel>
-          
-          <FloatingLabel
-            controlId="floatingInput"
-            label="address"
-            className="mb-3"
-          >
-            <Form.Control
-              type="text"
-              onChange={(e) => {
-                setFormData({
-                  ...formData,
-                  ["address"]: {
-                    key: "address",
-                    value: e.target.value,
-                    element: e.target,
-                    regex: formData["address"].regex,
-                  },
-                });
-              }}
-              defaultValue={modPopUp.hotelData.hotel.address}
+              defaultValue={""}
             />
           </FloatingLabel>
 
@@ -430,79 +323,13 @@ export default function ModifyPopUp({
                   },
                 });
               }}
-              defaultValue={modPopUp.hotelData.hotel.description}
-            />
-          </FloatingLabel>
-
-          <FloatingLabel
-            controlId="floatingInput"
-            label="Email address"
-            className="mb-3"
-          >
-            <Form.Control
-              type="email"
-              onChange={(e) => {
-                setFormData({
-                  ...formData,
-                  ["email"]: {
-                    key: "email",
-                    value: e.target.value,
-                    element: e.target,
-                    regex: formData["email"].regex,
-                  },
-                });
-              }}
-              defaultValue={modPopUp.hotelData.hotel.email}
-            />
-          </FloatingLabel>
-
-          <FloatingLabel
-            controlId="floatingInput"
-            label="phone"
-            className="mb-3"
-          >
-            <Form.Control
-              onChange={(e) => {
-                setFormData({
-                  ...formData,
-                  ["phone"]: {
-                    key: "phone",
-                    value: e.target.value,
-                    element: e.target,
-                    regex: formData["phone"].regex,
-                  },
-                });
-              }}
-              type="phone"
-              defaultValue={modPopUp.hotelData.hotel.phone}
-            />
-          </FloatingLabel>
-
-          <FloatingLabel
-            controlId="floatingInput"
-            label="website"
-            className="mb-3"
-          >
-            <Form.Control
-              type="text"
-              onChange={(e) => {
-                setFormData({
-                  ...formData,
-                  ["website"]: {
-                    key: "website",
-                    value: e.target.value,
-                    element: e.target,
-                    regex: formData["website"].regex,
-                  },
-                });
-              }}
-              defaultValue={modPopUp.hotelData.hotel.website}
+              defaultValue={""}
             />
           </FloatingLabel>
 
           <FloatingLabel
             controlId="floatingSelect"
-            label="Works with selects"
+            label="suites"
             className="mb-3"
           >
             <Form.Select
@@ -510,29 +337,114 @@ export default function ModifyPopUp({
               onChange={(e) => {
                 setFormData({
                   ...formData,
-                  ["city"]: {
-                    key: "city",
+                  ["suites"]: {
+                    key: "suites",
                     value: e.target.value,
                     element: e.target,
-                    regex: formData["city"].regex,
+                    regex: formData["suites"].regex,
                   },
                 });
               }}
               defaultValue={"adad"}
             >
-              <option value="1">{modPopUp.hotelData.hotel.city}</option>
-              {cities.map((value, index) => {
-                if (value.city === modPopUp.hotelData.hotel.city) {
-                  return;
-                }
+               <option value={"none"}>Select suites</option>
+              {["normal", "junior", "executive", "presidential"].map((value, index) => {
                 return (
-                  <option key={`city${index}`} value={value.city}>
-                    {value.city}
+                  <option key={`city${index}`} value={value}>
+                    {value}
                   </option>
                 );
               })}
             </Form.Select>
           </FloatingLabel>
+        
+
+          <FloatingLabel
+            controlId="floatingSelect"
+            label="type"
+            className="mb-3"
+          >
+            <Form.Select
+              aria-label="Floating label select example "
+              onChange={(e) => {
+                setFormData({
+                  ...formData,
+                  ["type"]: {
+                    key: "type",
+                    value: e.target.value,
+                    element: e.target,
+                    regex: formData["type"].regex,
+                  },
+                });
+              }}
+              defaultValue={"adad"}
+            >
+                <option value={"none"}>Select type</option>
+              {["single", "double", "triple", "quadruple"].map((value, index) => {
+                return (
+                  <option key={`city${index}`} value={value}>
+                    {value}
+                  </option>
+                );
+              })}
+            </Form.Select>
+          </FloatingLabel>
+
+
+          <FloatingLabel
+            controlId="floatingInput"
+            label="price"
+            className="mb-3"
+          >
+            <Form.Control
+              type="number"
+              onChange={(e) => {
+                setFormData({
+                  ...formData,
+                  ["price"]: {
+                    key: "price",
+                    value: e.target.value,
+                    element: e.target,
+                    regex: formData["price"].regex,
+                  },
+                });
+              }}
+              defaultValue={""}
+            />
+          </FloatingLabel>
+
+          <FloatingLabel
+            controlId="floatingSelect"
+            label="hotel"
+            className="mb-3"
+          >
+            <Form.Select
+              aria-label="Floating label select example "
+              onChange={(e) => {
+                setFormData({
+                  ...formData,
+                  ["id_hotel"]: {
+                    key: "id_hotel",
+                    value: e.target.value,
+                    element: e.target,
+                    regex: formData["id_hotel"].regex,
+                  },
+                });
+              }}
+              value={formData.id_hotel.value}
+            >
+                <option value={"none"}> Select a hotel </option>
+              {hotelsNames.map((value, index) => {
+                return (
+                  <option key={`hotel${index}`} value={value.id}>
+                    {value.name}
+                  </option>
+                );
+            
+              })}
+            </Form.Select>
+          </FloatingLabel>
+
           <Button 
           onClick={()=>{setConfirmVisible2(true)}}
           disabled={btnState} 

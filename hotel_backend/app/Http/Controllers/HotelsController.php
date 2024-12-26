@@ -27,24 +27,70 @@ class HotelsController extends Controller
         if (!AuthorityCheckers::isAdmin($user)){
             return response()->json(["message" => "Unauthorized"], 401);
         }
-        $data = $request->json()->all();
-        $validationRules = [
-            'name' => 'required|string',
-            'address' => 'required|string',
-            'description' => 'nullable|string',
-            'email' => 'required|email',
-            'phone' => 'required|numeric',
-            'website' => 'nullable|url',
-            'city' => 'required|string',
-        ];
-        $validator = Validator::make($data, $validationRules);
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
         try{
-            $hotel = Hotels::factory()->create($validator->validated());
-        }catch (\Exception $exception){
+            $request->validate([
+                'name' => 'string',
+                'address' => 'string',
+                'description' => 'nullable|string',
+                'email' => 'email',
+                'phone' => 'numeric',
+                'website' => 'url',
+                'city' => 'string',
+            ]);
+        }catch (ValidationException $exception){
+            return response()->json([
+                'message' => 'Validation failed!',
+                'errors' => $exception->errors(),
+            ], 422);
+        }
+
+
+        try{
+            $validated_data = [
+                "name"=>$request->input('name'),
+                "address"=>$request->input('address'),
+                "description"=>$request->input('description'),
+                "email"=>$request->input('email'),
+                "phone"=>$request->input('phone'),
+                "website"=>$request->input('website'),
+                "city"=>$request->input('city'),
+            ];
+            $hotel = Hotels::factory()->create($validated_data);
+        }
+        catch (\Exception $exception){
             return response()->json(["error"=>"can't create hotel"], 500);
+        }
+
+        if ($request->file('photos')){
+            // try and save the uploaded photos if so
+            try {
+                $request->validate([
+                    'photos.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+                ]);
+            }catch (ValidationException $exception){
+                return response()->json([
+                    'message' => 'photos validation failed! but the hotel was created',
+                    'error'=>$exception->errors(),
+                ], 222);
+            }
+            try{
+                DB::beginTransaction();
+                $photos = $request->file('photos');
+                $photoPaths = [];
+                $dbAction = [];
+                foreach ($photos as $photo) {
+                    $path = $photo->store('/', 'public');
+                    $photoPaths[] = $path;
+                }
+                foreach ($photoPaths as $photoPath){
+                    $dbAction[] = ["photo" => $photoPath, "hotel_id" => $hotel->id];
+                }
+                DB::table("hotels_photos")->insert($dbAction);
+                DB::commit();
+            }catch (\Exception $exception){
+                DB::rollBack();
+                return response()->json(["error"=>"can't save photos", 'error'=>$exception], 500);
+            }
         }
         return response()->json($hotel, 200);
     }
@@ -83,37 +129,38 @@ class HotelsController extends Controller
         try{
             $targetHotel->update($request->only(['name', 'address', 'description', 'email', 'phone', 'website', 'city']));
         }catch (\Exception $exception){
-            return response()->json(["error"=>"can't modify hotel"], 500);
+            return response()->json(["error"=>"can't modify hotel"], 505);
         }
-
-        // try and save the uploaded photos if so
-        try {
-            $request->validate([
-                'photos.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
-            ]);
-        }catch (ValidationException $exception){
-            return response()->json([
-                'message' => 'photos validation failed! but the data was updated',
-                'error'=>$exception->errors(),
-            ], 222);
-        }
-        $photos = $request->file('photos');
-        $photoPaths = [];
-        DB::beginTransaction();
-        try{
-            $dbAction = [];
-            foreach ($photos as $photo) {
-                $path = $photo->store('/', 'public');
-                $photoPaths[] = $path;
+        if ($request->file('photos')){
+            // try and save the uploaded photos if so
+            try {
+                $request->validate([
+                    'photos.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+                ]);
+            }catch (ValidationException $exception){
+                return response()->json([
+                    'message' => 'photos validation failed! but the data was updated',
+                    'error'=>$exception->errors(),
+                ], 222);
             }
-            foreach ($photoPaths as $photoPath){
-                $dbAction[] = ["photo" => $photoPath, "hotel_id" => $targetHotel->id];
+            DB::beginTransaction();
+            try{
+                $photos = $request->file('photos');
+                $photoPaths = [];
+                $dbAction = [];
+                foreach ($photos as $photo) {
+                    $path = $photo->store('/', 'public');
+                    $photoPaths[] = $path;
+                }
+                foreach ($photoPaths as $photoPath){
+                    $dbAction[] = ["photo" => $photoPath, "hotel_id" => $targetHotel->id];
+                }
+                DB::table("hotels_photos")->insert($dbAction);
+                DB::commit();
+            }catch (\Exception $exception){
+                DB::rollBack();
+                return response()->json(["error"=>"can't save photos", 'error'=>$exception], 500);
             }
-            DB::table("hotels_photos")->insert($dbAction);
-            DB::commit();
-        }catch (\Exception $exception){
-            DB::rollBack();
-            return response()->json(["error"=>"can't save photos", 'error'=>$exception], 500);
         }
         return response()->json(["message" => "data was modified correctly"], 200);
     }
@@ -137,7 +184,7 @@ class HotelsController extends Controller
         try{
             $hotel->delete();
         }catch (\Exception $exception){
-            return response()->json(["error"=>"can't delete hotel"], 500);
+            return response()->json(["error"=>"can't delete hotel", 'err'=>$exception], 500);
         }
         return response()->json(["message" => "Hotel deleted successfully"], 200);
     }

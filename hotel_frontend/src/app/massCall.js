@@ -1,6 +1,3 @@
-
-
-
 /**
  * a function to mass request , meaning at the same time
  * some number of calls

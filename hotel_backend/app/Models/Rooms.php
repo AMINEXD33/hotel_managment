@@ -18,4 +18,20 @@ class Rooms extends Model
             "baths",
             "description"
     ];
+
+    static function getAllRooms(){
+        $data = [];
+        $rooms = Rooms::query()
+            ->leftJoin("rooms_photos", "rooms.id", "=", "rooms_photos.room_id")
+            ->distinct()
+            ->get(["rooms.*"]);
+        foreach ($rooms as $room){
+            $tmpdata = [];
+            $tmpphotos = Rooms_photos::query()->where("room_id", $room->id)->get();
+            $tmpdata["photos"] = $tmpphotos;
+            $tmpdata["room"] = $room;
+            $data[] = $tmpdata;
+        }
+        return $data;
+    }
 }

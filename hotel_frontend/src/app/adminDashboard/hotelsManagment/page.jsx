@@ -4,7 +4,7 @@ import SideBar from "@/app/global_components/sidebar/sidebar";
 import "../adminDash.css";
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import { Row, Form, FloatingLabel, Col, Spinner, Card, Alert } from "react-bootstrap";
+import { Row, Form, FloatingLabel, Col, Spinner, Card, Alert, Button } from "react-bootstrap";
 import SearchCalls from "@/app/deboucer";
 import Image from "next/image";
 import ModifyPopUp from "@/app/global_components/popUps/modifyPopUp";
@@ -15,8 +15,11 @@ import {
   API_getHotelsByCity, 
   API_getHotelsById, 
   API_getHotelsByName, 
-  photobase
+  photobase,
+  API_deleteHotelById
 } from "../../../../endpoints/endpoints";
+import Confirmation from "@/app/global_components/confirmation/confirmation";
+import AddPopup from "@/app/global_components/popUps/addPopUp";
 
 
 /**
@@ -69,7 +72,33 @@ function fetchLoadHotels(...args) {
 
 }
 
+function deleteHotel(hotelId, key,setErrorAlert , setSuccessAlert){
 
+  let call = [{url:API_deleteHotelById(), method:"POST", body:{"hotel_id":hotelId}}];
+  let promises = massCall(call);
+  promises.then(async (promises) => {
+    let promis = promises[0];
+    if(promis.status === "fulfilled"){
+      if (promis.value.status === 200){
+        setSuccessAlert({state:true, message:"hotel was deleted !"});
+        const target_element = document.getElementById(key);
+        target_element.remove();
+      }else{
+        setErrorAlert({state:true, message:"can't delete this hotel, it may still contain active reservations !"})
+      }
+    }
+  })
+  .catch((err) => {
+    console.warn("can't get hotels lite liste", err);
+  })
+  .finally(()=>{
+    const st = setTimeout(()=>{
+      setErrorAlert({state:false, message:""});
+      setSuccessAlert({state:false, message:""});
+      clearTimeout(st);
+    }, 2000);
+  })
+}
 export default function HotelManagment() {
 
   const debouncerFrequency = 1000;
@@ -79,6 +108,10 @@ export default function HotelManagment() {
     state: false,
     id:NaN,
     hotelData:{}
+  })
+
+  const [addPopUp, setAddPop] = useState({
+    state: false,
   })
 
   // hotels data
@@ -93,7 +126,13 @@ export default function HotelManagment() {
   // loading spinner
   let [dataisLoading, setDataisLoading] = useState(false);
 
+  const [confirmVisible, setConfirmVisible] = useState({
+    state:false,
+    args:[]
+  });
+
   const [errorAlert, setErrorAlert] = useState({state:false, message:""});
+
   const [successAlert, setSuccessAlert] = useState({state:false, message:""});
 
   // for visual perposes we're setting the overflow of this page to hidden
@@ -153,6 +192,17 @@ export default function HotelManagment() {
         :
         null
       }
+      {/**add popup*/}
+      {
+        addPopUp.state==true?
+        <AddPopup 
+        addPopUp={addPopUp} 
+        setAddPop={setAddPop}
+        setErrorAlert={setErrorAlert}
+        setSuccessAlert={setSuccessAlert}
+        />:
+        null
+      }
       {
         errorAlert.state &&
         <Alert  variant="danger" className="alertCustom">
@@ -165,12 +215,26 @@ export default function HotelManagment() {
           {successAlert.message}
         </Alert>
       }
+
+            {/**confirmation for deleting a photo */}
+      {confirmVisible.state && 
+        <Confirmation
+          confirmationTitle={"are you sure you want to delete hotel"}
+          confirmationBodyText={"deleting this hotel will result in it's permenent lose!."}
+          onYesCallBack={(...args)=>{deleteHotel(...args)}}
+          onNoCallBack={(...args)=>{console.log("no")}}
+          setVisibleState={setConfirmVisible}
+          args={[...confirmVisible.args]}
+          yesButtonText={"delete"}
+          noButtonText={"cancel"}
+        />
+      }
     <div className="container-fluid   master">
       <SideBar />
       <div className="pagecontentmain">
         <h2 className="managmentHeader">Hotels managment</h2>
         <div className="dataFilter">
-          <Row className="g-3">
+          <Row className="g-4">
             <Col md>
               <FloatingLabel controlId="floatingInputGrid" label="Hotel Name">
                 <Form.Control
@@ -230,6 +294,12 @@ export default function HotelManagment() {
                 </Form.Select>
               </FloatingLabel>
             </Col>
+
+            <Col md style={{"display":"flex", "justifyContent":"center"}}>
+              <Button 
+              onClick={()=>{setAddPop({state:true})}}
+              variant="secondary">add hotail</Button>
+            </Col>
           </Row>
 
           <div className="dataDisplayer">
@@ -242,7 +312,7 @@ export default function HotelManagment() {
             
           </div>
           <div className="dataDisplayer" >
-            <Row xs={1} md={2} className="g-4" >
+            <Row xs={1} md={2} className="g-4" id="hotelsCOntainer">
               {hotelsData.map((value, idx) => {
                 if (value.hotel === null){return;}
                 let targetPhoto = null;
@@ -257,7 +327,7 @@ export default function HotelManagment() {
 
                 
                 return(
-                <Col key={idx}>
+                <Col key={`hotel${idx}`} id={`hotel${idx}`}>
                   <Card>
                     <Image
                       src={!targetPhoto?"/null":photobase+targetPhoto}
@@ -280,7 +350,7 @@ export default function HotelManagment() {
                         title="delete this hotel"
                         className="boxActionIconDelete"
                         src="/delete.png" width={30} height={30}
-                        onClick={()=>{()=>{}}}
+                        onClick={()=>{setConfirmVisible({state:true, args:[value.hotel.id, `hotel${idx}`, setErrorAlert , setSuccessAlert]})}}
                         ></img>
                       </div>
                     </Card.Body>

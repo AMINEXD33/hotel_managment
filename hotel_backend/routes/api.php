@@ -7,7 +7,7 @@ use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\ReservationsController;
 use App\Http\Controllers\RoomsController;
 use \App\Http\Controllers\HotelsPhotosController;
-
+use \App\Http\Controllers\RoomsPhotosController;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -88,5 +88,16 @@ Route::post('/generateAnaliticsYearlyRevenues', [ReservationsController::class, 
 Route::get('/getAvailableYears', [ReservationsController::class, 'getAvailableYears'])->middleware('auth:sanctum');
 
 
+
 // hotels photos
 Route::post('/deleteHotelPhotoById', [HotelsPhotosController::class, 'deleteHotelPhotoById'])->middleware('auth:sanctum');
+
+
+// rooms photos
+Route::post('/getRoomPhotosById', [RoomsPhotosController::class, 'getRoomPhotosById'])->middleware('auth:sanctum');
+Route::post('/deleteRoomPhotoById', [RoomsPhotosController::class, 'deleteRoomPhotoById'])->middleware('auth:sanctum');
+
+
+// reservations
+Route::get("/getAllReservations", [ReservationsController::class, 'getAllReservations'])->middleware('auth:sanctum');
+Route::post("/cancelReservationAdmin", [ReservationsController::class, 'cancelReservationAdmin'])->middleware('auth:sanctum');

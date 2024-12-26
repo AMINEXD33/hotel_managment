@@ -27,6 +27,9 @@ class HotelsPhotosController extends Controller
             return response()->json(["message" => "No photo with such id"], 400);
         }
         try{
+            if (file_exists($photo->photo)) {
+                unlink($photo->photo); // Delete the file
+            }
             $photo->delete();
         }catch (\Exception $e){
             return response()->json(["error" => "can't delete this photo"], 400);
