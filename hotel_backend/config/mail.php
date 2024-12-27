@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'log'),
+    'default' => env('MAIL_MAILER', 'smtp'),
 
     /*
     |--------------------------------------------------------------------------
@@ -59,6 +59,7 @@ return [
             // 'client' => [
             //     'timeout' => 5,
             // ],
+            'token' => env('89466797-f793-4c83-a0c5-b896802c17a0'),
         ],
 
         'resend' => [

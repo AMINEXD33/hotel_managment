@@ -126,6 +126,9 @@
       <path value="$PROJECT_DIR$/hotel_backend/vendor/voku/portable-ascii" />
       <path value="$PROJECT_DIR$/hotel_backend/vendor/hamcrest/hamcrest-php" />
       <path value="$PROJECT_DIR$/hotel_backend/vendor/laravel/sanctum" />
+      <path value="$PROJECT_DIR$/hotel_backend/vendor/symfony/postmark-mailer" />
+      <path value="$PROJECT_DIR$/hotel_backend/vendor/symfony/http-client-contracts" />
+      <path value="$PROJECT_DIR$/hotel_backend/vendor/symfony/http-client" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />

@@ -11,7 +11,7 @@ import ModifyPopUp from "@/app/global_components/popUps/modifyPopUp";
 import massCall from "@/app/massCall";
 import { 
   API_getReservations,
-  API_deleteRoomById
+  API_CalcellReservation
 } from "../../../../endpoints/endpoints";
 import Confirmation from "@/app/global_components/confirmation/confirmation";
 import AddPopupRooms from "@/app/global_components/popUps/addPopUprooms";
@@ -21,9 +21,12 @@ import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import ModifyPopUpRooms from "@/app/global_components/popUps/modifyPopUprooms";
 
-function cancelReservation(roomId,setErrorAlert , setSuccessAlert, setModPop){
 
-  let call = [{url:API_deleteRoomById(), method:"POST", body:{"room_id":roomId}}];
+
+
+function cancelReservation(reservationId, setErrorAlert , setSuccessAlert, setModPop){
+
+  let call = [{url:API_CalcellReservation(), method:"POST", body:{"reservation_id":reservationId}}];
   let promises = massCall(call);
   promises.then(async (promises) => {
     let promis = promises[0];
@@ -49,17 +52,6 @@ function cancelReservation(roomId,setErrorAlert , setSuccessAlert, setModPop){
   });
 }
 
-function findRoomId(id , data){
-  let room_ = {};
-  data.forEach(room => {
-    if (room["id"] === id){
-      room_ = room;
-    }
-  });
-
-  return room_;
-
-}
   
 const paginationModel = { page: 0, pageSize: 5 };
   
@@ -134,7 +126,12 @@ export default function ReservationsManagment() {
                 onClick={() =>setModPop({
                   state:true, 
                   id:params.row.id, 
-                  roomData: findRoomId(params.row.id, hotelRooms)
+                  roomData: 
+                  setConfirmVisible({state:true, args:[
+                    params.row.id, 
+                    setErrorAlert, 
+                    setSuccessAlert,
+                    setModPop]})
                 })}
                 style={{ marginRight: 8 }}
               >
@@ -185,29 +182,6 @@ export default function ReservationsManagment() {
 
   return (
     <>
-      {/*modify popups*/}
-      {
-        modPopUp.state==true ?
-        <ModifyPopUpRooms 
-        modPopUp={modPopUp} 
-        setModPop={setModPop}
-        setErrorAlert={setErrorAlert}
-        setSuccessAlert={setSuccessAlert}
-        />
-        :
-        null
-      }
-      {/**add popup*/}
-      {
-        addPopUp.state==true?
-        <AddPopupRooms 
-        addPopUp={addPopUp} 
-        setAddPop={setAddPop}
-        setErrorAlert={setErrorAlert}
-        setSuccessAlert={setSuccessAlert}
-        />:
-        null
-      }
       {
         errorAlert.state &&
         <Alert  variant="danger" className="alertCustom">
@@ -221,11 +195,11 @@ export default function ReservationsManagment() {
         </Alert>
       }
 
-      {/**confirmation for deleting a photo */}
+      {/**confirmation for canceling reservation*/}
       {confirmVisible.state && 
         <Confirmation
-          confirmationTitle={"are you sure you want to delete this room?"}
-          confirmationBodyText={"deleting this room will result in it's permenent lose!."}
+          confirmationTitle={"are you sure you want to cancel this reservation?"}
+          confirmationBodyText={"deleting this reservation will cause an email to be sent to the client!."}
           onYesCallBack={(...args)=>{cancelReservation(...args)}}
           onNoCallBack={(...args)=>{console.log("no")}}
           setVisibleState={setConfirmVisible}

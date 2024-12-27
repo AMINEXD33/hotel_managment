@@ -114,6 +114,9 @@
       <excludeFolder url="file://$MODULE_DIR$/hotel_backend/vendor/vlucas/phpdotenv" />
       <excludeFolder url="file://$MODULE_DIR$/hotel_backend/vendor/voku/portable-ascii" />
       <excludeFolder url="file://$MODULE_DIR$/hotel_backend/vendor/webmozart/assert" />
+      <excludeFolder url="file://$MODULE_DIR$/hotel_backend/vendor/symfony/http-client" />
+      <excludeFolder url="file://$MODULE_DIR$/hotel_backend/vendor/symfony/http-client-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/hotel_backend/vendor/symfony/postmark-mailer" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -1,0 +1,9 @@
+.content{
+    height: 100%;
+    width: 100%;
+    background-color: rgba(66, 66, 66, 0.55);
+    border-radius: 20px;
+}
+.header{
+    color: black;
+}
