@@ -26,13 +26,6 @@ function registerPageregister(
   if (loginLock) {
     return;
   }
-  fetch(API_csrf(), {
-    method: "GET",
-    credentials: "include",
-  }).then(() => {
-    console.log("ooko");
-  });
-
   console.log("data = >", formData);
   setLoginLock(true);
   setTimeout(() => {
