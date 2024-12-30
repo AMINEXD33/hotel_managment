@@ -117,6 +117,8 @@
       <excludeFolder url="file://$MODULE_DIR$/hotel_backend/vendor/symfony/http-client" />
       <excludeFolder url="file://$MODULE_DIR$/hotel_backend/vendor/symfony/http-client-contracts" />
       <excludeFolder url="file://$MODULE_DIR$/hotel_backend/vendor/symfony/postmark-mailer" />
+      <excludeFolder url="file://$MODULE_DIR$/hotel_backend/vendor/paypal/paypal-checkout-sdk" />
+      <excludeFolder url="file://$MODULE_DIR$/hotel_backend/vendor/paypal/paypalhttp" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

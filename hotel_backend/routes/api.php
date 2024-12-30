@@ -8,6 +8,7 @@ use App\Http\Controllers\ReservationsController;
 use App\Http\Controllers\RoomsController;
 use \App\Http\Controllers\HotelsPhotosController;
 use \App\Http\Controllers\RoomsPhotosController;
+use \App\Http\Controllers\PaypalController;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -69,8 +70,10 @@ Route::get('/getAllUnReservedRooms', [RoomsController::class, 'getAllUnReservedR
 
 Route::post('/login', [ClientsController::class, 'login']);
 Route::get('/logout', [ClientsController::class, 'logout']);
+
 Route::get('/checkauth', [ClientsController::class, 'checkauth'])->middleware('auth:sanctum');
 
+Route::get("/getRoomsUser", [RoomsController::class, 'getRoomsUser'])->middleware('auth:sanctum');
 
 // analitics functions
 Route::get('/classedHotelsByReservationsCount', [ReservationsController::class, 'classedHotelsByReservationsCount'])->middleware('auth:sanctum');
@@ -101,3 +104,14 @@ Route::post('/deleteRoomPhotoById', [RoomsPhotosController::class, 'deleteRoomPh
 // reservations
 Route::get("/getAllReservations", [ReservationsController::class, 'getAllReservations'])->middleware('auth:sanctum');
 Route::post("/cancelReservationAdmin", [ReservationsController::class, 'cancelReservationAdmin'])->middleware('auth:sanctum');
+
+
+
+// PAYPAL
+Route::post('/paypal/create-order', [PaypalController::class, 'createOrder'])->name('createOrder');
+Route::post('/paypal/capture-order', [PaypalController::class, 'captureOrder'])->name('captureOrder')->middleware('auth:sanctum');
+
+
+Route::get('/paypal/success', [PaypalController::class, 'successOrder'])->name('success.order')->middleware('auth:sanctum');
+Route::get('/paypal/cancel', [PaypalController::class, 'cancelOrder'])->name('cancel.order')->middleware('auth:sanctum');
+

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\utils\AuthorityCheckers;
 use App\Http\Requests\StoreroomsRequest;
 use App\Http\Requests\UpdateroomsRequest;
+use App\Models\HotelsPhotos;
 use App\Models\Rooms;
 use App\Models\Rooms_photos;
 use Illuminate\Http\Request;
@@ -216,4 +217,26 @@ class RoomsController extends Controller
     public function getAllUnReservedRooms(Request $request):JsonResponse{
         return response()->json(Rooms::all()->where("available", true), 200);
     }
+
+    public function getRoomsUser(Request $request):JsonResponse{
+        $rooms = Rooms::query()
+            ->join("hotels", "hotels.id", "=", "id_hotel")
+            ->select("rooms.*", "hotels.name", "hotels.address", "hotels.phone", "hotels.email", "hotels.city")
+            ->get();
+        $data = [];
+        $room_photos = [];
+        foreach ($rooms as $room){
+            $room_photos = Rooms_photos::query()->where('room_id', $room->id)->get();
+            $hotel_photos = HotelsPhotos::query()->where('hotel_id', $room->id_hotel)->get();
+            $tmp = [];
+            $tmp['room'] = $room;
+            $tmp['room_photos'] = $room_photos;
+            $tmp['hotel_photos'] = $hotel_photos;
+            $data[] = $tmp;
+        }
+        return response()->json($data, 200);
+    }
+
+
+
 }

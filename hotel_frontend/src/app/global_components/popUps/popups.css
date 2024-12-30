@@ -4,7 +4,6 @@
     width: 100%;
 
     z-index: 10;
-    padding: 20px;
     padding-top: 0px;
     /* animation: apear 0.3s alternate forwards ease-in-out; */
     position: fixed;
@@ -14,6 +13,7 @@
 
     display: flex;
     justify-content: center;
+
 
 }
 
@@ -83,4 +83,47 @@ p {
     text-overflow: ellipsis;  
     max-width: 500px;         
     max-height: 250px;
+  }
+
+  .reservationPopup{
+    background-color: rgb(255, 255, 255);
+    height: 101vh;
+    width: 100%;
+
+    z-index: 1;
+    padding: 25px;
+    padding-top: 0px;
+    margin-top: 0;
+    /* animation: apear 0.3s alternate forwards ease-in-out; */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .closeBtn{
+    position: fixed;
+    top: 0;
+    right: 0;
+  }
+  .reservePart{
+    margin-top: 10px;
+    background-color: aliceblue;
+    height: fit-content;
+    width: 100%;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    padding: 20px;
+    color: black;
+    flex-direction: column;
+    gap: 10px;
+    
+  }
+  .roomDatashow, .hotelDatashow{
+    width: 100%;
   }

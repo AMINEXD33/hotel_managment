@@ -1,6 +1,18 @@
 export var base = "https://localhost/api";
 export var base2 = "https://localhost/sanctum/csrf-cookie";
 export var photobase = "https://localhost/storage/";
+export var PAYPALCLIENT = "AVHXZ8YVd9JjOuhOrGDuNeWqV7SU5OXO3kADXbkjsSyBVPZsG5WnffbSuqtZzFc8dpUbhhSLNTcnKL6u";
+
+
+export function API_paypalCreateOrder(){
+    return (base.concat("/paypal/create-order"));
+}
+export function API_paypalCaptureOrder(){
+    return (base.concat("/paypal/capture-order"));
+}
+
+
+
 
 export function API_checkauth (){
     return (base.concat("/checkauth"));
@@ -8,6 +20,9 @@ export function API_checkauth (){
 
 export function API_login(){
     return (base.concat("/login"));
+}
+export function API_logout(){
+    return (base.concat("/logout"));
 }
 
 export function API_csrf(){
@@ -130,4 +145,8 @@ export function API_getReservations(){
 
 export function API_CalcellReservation(){
     return(base.concat("/cancelReservationAdmin"));
+}
+
+export function API_getRoomsUser(){
+    return(base.concat("/getRoomsUser"));
 }

@@ -10,6 +10,8 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import "./sidebar.css";
+import Logout from "./logout";
+import { useRouter } from "next/navigation";
 
 export default function SideBar({
   logo,
@@ -19,6 +21,7 @@ export default function SideBar({
   activeLink = 1,
   classActiveLink = "activeLink",
 }) {
+  const router = useRouter();
   return (
     <Navbar expand="lg" className="bg-body-tertiary navbar">
       <Container fluid>
@@ -50,7 +53,9 @@ export default function SideBar({
 
           </Nav>
           <Form className="d-flex">
-            <Button variant="outline-warning">Lougout</Button>
+            <Button 
+            onClick={()=>{Logout(router)}}
+            variant="outline-warning">Lougout</Button>
           </Form>
         </Navbar.Collapse>
       </Container>

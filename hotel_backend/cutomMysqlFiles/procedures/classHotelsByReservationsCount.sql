@@ -17,5 +17,5 @@ BEGIN
     INNER JOIN  hotels
     on rooms.id_hotel = hotels.id
     GROUP BY id_hotel, hotels.name, hotels.address
-    ORDER BY reservations;
+    ORDER BY reservations DESC;
 END;

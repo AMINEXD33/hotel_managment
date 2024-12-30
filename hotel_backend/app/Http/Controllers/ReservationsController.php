@@ -350,14 +350,14 @@ class ReservationsController extends Controller
         if (!$customer){
             return response()->json(["error" => "Customer not found"], 404);
         }
+        ////
+       try{
+           $reservation->delete();
+       }catch (\Exception $e){
+           return response()->json(["error" => $e->getMessage()], 500);
+       }
         // do something here , send an email or what ever
         Mail::to($customer)->send(new ReservationCanceled($customer, $reservation, $hotel));
-        ////
-//        try{
-//            $reservation->delete();
-//        }catch (\Exception $e){
-//            return response()->json(["error" => $e->getMessage()], 500);
-//        }
         return response()->json(["success" => "Reservation has been cancelled"], 200);
     }
 }

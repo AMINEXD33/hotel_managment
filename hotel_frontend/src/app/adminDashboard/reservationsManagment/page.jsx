@@ -212,13 +212,6 @@ export default function ReservationsManagment() {
       <SideBar />
       <div className="pagecontentmain">
         <h2 className="managmentHeader">Reservations managment</h2>
-        <div style={{display:"block", margin:"15px"}}>
-          <Col md style={{"display":"flex", "justifyContent":"center"}}>
-                <Button 
-                onClick={()=>{setAddPop({state:true})}}
-                variant="secondary">add room</Button>
-          </Col>
-        </div>
         <h5 style={{margin:"10px", color:"black"}}>current reservations</h5>
         <div className="dataFilter">
         <Paper sx={{ height: 400, width: '100%' }}>
