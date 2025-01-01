@@ -218,7 +218,7 @@ export default function LoginPage() {
           </div>
         </div>
         <div className="loginPage_loginform">
-          <div className="form-floating mb-3">
+          <div className="form-floating mb-3" style={{display:"flex", flexDirection:"column",gap:"10px"}}>
             <div className="form-floating">
               <input
                 onChange={(e) => {

@@ -150,3 +150,18 @@ export function API_CalcellReservation(){
 export function API_getRoomsUser(){
     return(base.concat("/getRoomsUser"));
 }
+
+export function API_getAllUsers(){
+    return(base.concat("/getAllUsers"));
+}
+
+export function API_modifyUserAuthority(){
+    return(base.concat("/changeUserAuthority"));
+}
+
+export function API_deleteUser(){
+    return(base.concat("/deleteUser"));
+}
+export function API_modifyUser(){
+    return(base.concat("/modifyUser"));
+}

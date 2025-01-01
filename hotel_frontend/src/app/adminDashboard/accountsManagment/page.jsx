@@ -1,39 +1,41 @@
+
+
+
+
 "use client";
 
 import SideBar from "@/app/global_components/sidebar/sidebar";
 import "../adminDash.css";
 import React, { useEffect, useState } from "react";
-import Select from "react-select";
-import { Row, Form, FloatingLabel, Col, Spinner, Card, Alert, Button } from "react-bootstrap";
-import SearchCalls from "@/app/deboucer";
-import Image from "next/image";
-import ModifyPopUp from "@/app/global_components/popUps/modifyPopUp";
+import {Col, Alert, Button } from "react-bootstrap";
 import massCall from "@/app/massCall";
 import { 
   API_getAllRooms,
-  API_deleteRoomById
+  API_deleteUser,
+  API_getAllUsers,
+  API_modifyUserAuthority
 } from "../../../../endpoints/endpoints";
 import Confirmation from "@/app/global_components/confirmation/confirmation";
 import AddPopupRooms from "@/app/global_components/popUps/addPopUprooms";
-import Badge from 'react-bootstrap/Badge';
+import Switch from '@mui/material/Switch';
 
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import ModifyPopUpRooms from "@/app/global_components/popUps/modifyPopUprooms";
+import ModifyPopUpusers from "@/app/global_components/popUps/modifyPopUpusers";
 
-function deleteHotel(roomId,setErrorAlert , setSuccessAlert, setModPop){
+function deleteUser(userId, setErrorAlert , setSuccessAlert, setModPop){
 
-  let call = [{url:API_deleteRoomById(), method:"POST", body:{"room_id":roomId}}];
+  let call = [{url:API_deleteUser(), method:"POST", body:{"user_id":userId}}];
   let promises = massCall(call);
   promises.then(async (promises) => {
     let promis = promises[0];
     if(promis.status === "fulfilled"){
       if (promis.value.status === 200){
-        setSuccessAlert({state:true, message:"hotel was deleted !"});
+        setSuccessAlert({state:true, message:"user was deleted !"});
         // change state to refetch the changes
-        setModPop({state:true,id:NaN, roomData:{}})
+        setModPop({state:false,id:NaN, roomData:{}})
       }else{
-        setErrorAlert({state:true, message:"can't delete this room, it may still be reserved!"})
+        setErrorAlert({state:true, message:"can't delete this user, it may still have some reservations!"})
       }
     }
   })
@@ -49,27 +51,54 @@ function deleteHotel(roomId,setErrorAlert , setSuccessAlert, setModPop){
   });
 }
 
-function findRoomId(id , data){
-  let room_ = {};
-  data.forEach(room => {
-    if (room["id"] === id){
-      room_ = room;
+function findUser(id , data){
+  let user_ = {};
+  data.forEach(user => {
+    if (user["id"] === id){
+      user_ = user;
     }
   });
 
-  return room_;
+  return user_;
 
 }
-  
+
+function changeAuthority(event, value, clientID, setSuccessAlert, setErrorAlert){
+  console.log(value," CLIENT ID ", clientID);
+  let call = [{url:API_modifyUserAuthority(), method:"POST", body:{"client_id":clientID,"is_admin":value}}];
+  let promises = massCall(call);
+  promises.then(async (promises) => {
+    let promis = promises[0];
+    if(promis.status === "fulfilled"){
+      if (promis.value.status === 200){
+        setSuccessAlert({state:true, message:"Authority was changed !"});
+        // change state to refetch the changes
+        setModPop({state:true,id:NaN, roomData:{}})
+      }else{
+        setErrorAlert({state:true, message:"can't change the Authority of this client!"})
+      }
+    }
+  })
+  .catch((err) => {
+    console.warn("can't get hotels lite liste", err);
+  })
+  .finally(()=>{
+    const st = setTimeout(()=>{
+      setErrorAlert({state:false, message:""});
+      setSuccessAlert({state:false, message:""});
+      clearTimeout(st);
+    }, 2000);
+  });
+}
 const paginationModel = { page: 0, pageSize: 5 };
   
-export default function HotelManagment() {
+export default function AccountManagment() {
 
   // state of the modifie popup
   const [modPopUp, setModPop] = useState({
     state: false,
     id:NaN,
-    roomData : {}
+    userData : {}
   })
 
   const [addPopUp, setAddPop] = useState({
@@ -77,7 +106,7 @@ export default function HotelManagment() {
   })
 
   // hotels data
-  let [hotelRooms, sethotelRooms] = useState([]);
+  let [usersAccount, setUsersAccount] = useState([]);
 
   // loading spinner
   let [dataisLoading, setDataisLoading] = useState(false);
@@ -93,32 +122,29 @@ export default function HotelManagment() {
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 90 },
-    { field: 'type', headerName: 'Type', width: 150 },
-    { field: 'suites', headerName: 'Suite', width: 110 },
-    { field: 'price', headerName: 'Price', width: 90,
-
-      renderCell: (params)=>{
+    { field: 'name', headerName: 'Name', width: 150 },
+    { field: 'lastname', headerName: 'Last Name', width: 110 },
+    { field: 'email', headerName: 'Email', width: 90},
+    { field: 'is_admin', headerName: 'Is admin', width: 90,
+      renderCell:(params)=>{
+        const label = { inputProps: { 'aria-label': 'Color switch demo' } };
+        const user = findUser(params.row.id, usersAccount);
         return(
-          <>
-            <p>{params.row.price} $/h</p>
-          </>
+          <Switch 
+          {...label} 
+          defaultChecked = {user.is_admin? user.is_admin: false}
+          onChange={(e, value)=>{changeAuthority(
+            e, 
+            value, 
+            params.row.id,
+            setSuccessAlert, 
+            setErrorAlert)}} 
+  
+          
+          />
         )
       }
     },
-    { field: 'available', headerName: 'Available', width: 90,
-
-      renderCell: (params)=>{
-        return(
-          <>
-          {params.row.available === 1 &&<Badge bg="success">free</Badge>}
-          {params.row.available === 0 &&<Badge bg="danger">reserved</Badge>}
-          </>
-        )
-      }
-    },
-    { field: 'beds', headerName: 'Beds', width: 90 },
-    { field: 'baths', headerName: 'Baths', width: 90 },
-    { field: 'description', headerName: 'Description', width: 90 },
     {
       field: 'actions',
       headerName: 'Actions',
@@ -133,7 +159,7 @@ export default function HotelManagment() {
               onClick={() =>setModPop({
                 state:true, 
                 id:params.row.id, 
-                roomData: findRoomId(params.row.id, hotelRooms)
+                userData: findUser(params.row.id, usersAccount)
               })}
               style={{ marginRight: 8 }}
             >
@@ -165,7 +191,7 @@ export default function HotelManagment() {
       return;
     }
     setDataisLoading(true);
-    const callRooms = {url:API_getAllRooms(), method:"GET"};
+    const callRooms = {url:API_getAllUsers(), method:"GET"};
     let promises = massCall([callRooms]);
     promises.then(async (promises) => {
       let index = 0;
@@ -174,7 +200,7 @@ export default function HotelManagment() {
           let data = await promis.value.json();
           console.warn("damn data .>>>", data);
           if (Array.isArray(data)) {
-            sethotelRooms(data);
+            setUsersAccount(data);
             setDataisLoading(false);
           } else {
             console.warn("the data is not an array then it's not valid");
@@ -196,7 +222,7 @@ export default function HotelManagment() {
       {/*modify popups*/}
       {
         modPopUp.state==true ?
-        <ModifyPopUpRooms 
+        <ModifyPopUpusers 
         modPopUp={modPopUp} 
         setModPop={setModPop}
         setErrorAlert={setErrorAlert}
@@ -229,12 +255,12 @@ export default function HotelManagment() {
         </Alert>
       }
 
-      {/**confirmation for deleting a photo */}
+      {/**confirmation for deleting a user */}
       {confirmVisible.state && 
         <Confirmation
-          confirmationTitle={"are you sure you want to delete this room?"}
-          confirmationBodyText={"deleting this room will result in it's permenent lose!."}
-          onYesCallBack={(...args)=>{deleteHotel(...args)}}
+          confirmationTitle={"are you sure you want to delete this user?"}
+          confirmationBodyText={"deleting this user will result in her/his permenent loss!."}
+          onYesCallBack={(...args)=>{deleteUser(...args)}}
           onNoCallBack={(...args)=>{console.log("no")}}
           setVisibleState={setConfirmVisible}
           args={[...confirmVisible.args]}
@@ -245,18 +271,13 @@ export default function HotelManagment() {
     <div className="container-fluid   master">
       <SideBar />
       <div className="pagecontentmain">
-        <h2 className="managmentHeader">Rooms managment</h2>
+        <h2 className="managmentHeader">Users managment</h2>
         <div style={{display:"block", margin:"15px"}}>
-          <Col md style={{"display":"flex", "justifyContent":"center"}}>
-                <Button 
-                onClick={()=>{setAddPop({state:true})}}
-                variant="secondary">add room</Button>
-          </Col>
         </div>
         <div className="dataFilter">
         <Paper sx={{ height: 400, width: '100%' }}>
             <DataGrid
-                rows={hotelRooms}
+                rows={usersAccount}
                 columns={columns}
                 initialState={{ pagination: { paginationModel } }}
                 pageSizeOptions={[5, 10]}
@@ -269,3 +290,6 @@ export default function HotelManagment() {
     </>
   );
 }
+
+
+

@@ -170,7 +170,7 @@ export default function UserDashboard() {
           onChange={(e, val)=>(setFilterData({...filterData, city:val}))}
           renderInput={(params) => <TextField {...params} label="Cities" />}
         />
-        {/** range for filtering by ratings*/}
+        {/* * range for filtering by ratings
         <Box sx={{ width: 300 }} >
             <label style={{color:"black"}}>rating</label>
           <Slider
@@ -185,7 +185,7 @@ export default function UserDashboard() {
             min={0}
             max={5}
           />
-        </Box>
+        </Box> */}
       </div>
       {
         // Render skeletons if no data was loaded yet
@@ -242,7 +242,7 @@ export default function UserDashboard() {
             roomId={room.roomId}
             available={room.room.available}
             roomSuite={room.room.suites}
-            roomCity={room.room.suites}
+            roomCity={room.room.city}
             allData={data}
             roomData={room}
             setSuccessAlert={setSuccessAlert}

@@ -25,7 +25,7 @@ export default function SideBar({
   return (
     <Navbar expand="lg" className="bg-body-tertiary navbar">
       <Container fluid>
-        <Navbar.Brand href="#">Navbar scroll</Navbar.Brand>
+        <Navbar.Brand href="#">Hotel Managment</Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav
@@ -45,7 +45,7 @@ export default function SideBar({
               <NavDropdown.Item href="/adminDashboard/reservationsManagment">
                 Reservations managment
               </NavDropdown.Item>
-              <NavDropdown.Item href="#action5">
+              <NavDropdown.Item href="/adminDashboard/accountsManagment">
                 accounts managment
               </NavDropdown.Item>
             </NavDropdown>

@@ -29,7 +29,7 @@ class RoomsController extends Controller
                 "id_hotel"=>"required|integer",
                 "type"=>"required|in:single,double,triple,quadruple",
                 "suites"=>"required|in:normal,junior,executive,presidential",
-                "price"=>"integer|required|min:1",
+                "price"=>"numeric|required|min:1",
                 "beds"=>"integer|min:1|required",
                 "baths"=>"integer|min:1|required",
                 "description"=>"nullable|string",

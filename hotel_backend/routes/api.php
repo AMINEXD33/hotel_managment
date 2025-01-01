@@ -32,10 +32,15 @@ Route::get('/hotelReservationsCheckoutBetween', [ReservationsController::class, 
 // CRUD  clients
 Route::post('/register', [ClientsController::class, 'createClient']);
 Route::post('/modifyClient', [ClientsController::class, 'modifyClient'])->middleware('auth:sanctum');
-Route::post('/deleteClient', [ClientsController::class, 'deleteClient'])->middleware('auth:sanctum');
+Route::post('/modifyUser', [ClientsController::class, 'modifyUser'])->middleware('auth:sanctum');
 
-Route::post('/getAllClients', [ClientsController::class, 'getAllClients']);
+Route::post('/deleteClient', [ClientsController::class, 'deleteClient'])->middleware('auth:sanctum');
+Route::post('/deleteUser',[ClientsController::class, 'deleteUser'])->middleware('auth:sanctum');
+
+Route::post('/changeUserAuthority', [ClientsController::class, 'changeUserAuthority']);
+Route::get('/getAllClients', [ClientsController::class, 'getAllClients']);
 Route::post('/getAllAdmins', [ClientsController::class, 'getAllAdmins']);
+Route::get('/getAllUsers', [ClientsController::class, 'getAllUsers']);
 
 Route::post('/getClientById', [ClientsController::class, 'getClientById']);
 Route::post('/getAdminById', [ClientsController::class, 'getAdminById']);

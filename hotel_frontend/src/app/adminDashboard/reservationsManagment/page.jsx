@@ -32,7 +32,7 @@ function cancelReservation(reservationId, setErrorAlert , setSuccessAlert, setMo
     let promis = promises[0];
     if(promis.status === "fulfilled"){
       if (promis.value.status === 200){
-        setSuccessAlert({state:true, message:"hotel was deleted !"});
+        setSuccessAlert({state:true, message:"reservation was canceled !"});
         // change state to refetch the changes
         setModPop({state:true,id:NaN, roomData:{}})
       }else{
@@ -102,7 +102,7 @@ export default function ReservationsManagment() {
       renderCell: (params)=>{
         return(
           <>
-            <p>{Number(params.row.total_price).toFixed(2)} DH</p>
+            <p>{Number(params.row.total_price).toFixed(2)} $</p>
           </>
         )
       }

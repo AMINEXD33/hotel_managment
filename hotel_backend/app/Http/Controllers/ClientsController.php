@@ -91,6 +91,30 @@ class ClientsController extends Controller
         return response()->json(["msg" => "Client created successfully"], 200);
     }
 
+    public function changeUserAuthority(Request $request): JsonResponse{
+        $request_data = $request->json();
+        $client_id = $request_data->get("client_id");
+        $is_admin = $request_data->get("is_admin");
+        $session_client_id = auth()->id();
+        if (!$client_id){
+            return response()->json(["error" => "client_id required"], 400);
+        }
+        $User = User::query()->find($client_id);
+        if (!$User){
+            return response()->json(["error" => "no client with such id"], 400);
+        }
+        if ($is_admin === NULL){
+            return response()->json(["error" => "unvalid is_admin value", "us_admin"=>$is_admin], 400);
+        }
+        try{
+            $is_admin = (bool) $is_admin;
+            $update = $User->update(["is_admin"=>$is_admin]);
+        }catch(\Exception $e){
+            return response()->json(["error" => "can't modify this client".$e], 500);
+        }
+        return response()->json(["msg" => "Authority was changed", "is_admin"=>$is_admin], 200);
+    }
+
     /**
      * A function to modify a Client's information
      * it only allows clients to modify their own information
@@ -112,7 +136,6 @@ class ClientsController extends Controller
             "lastname" => $request_data->get("lastname"),
             "password" => $request_data->get("password"),
             "email" => $request_data->get("email"),
-            "photo" => $request_data->get("photo"),
         ];
 
         $verified_data = [];
@@ -140,7 +163,48 @@ class ClientsController extends Controller
             try{
                 $query = $client->newQuery()->where('id', $client->id)->update($verified_data);
             }catch (\Exception $e){
-                return response()->json(["error" => "can't modify client with this data".$e], 400);
+                return response()->json(["error" => "can't modify client with this data".$e], 500);
+            }
+        }
+        return response()->json(["msg" => "Client modified successfully"], 200);
+    }
+
+    public function modifyUser(Request $request): JsonResponse
+    {
+        $request_data = $request->json();
+        $user_id = $request_data->get("user_id");
+        $session_client_id = auth()->id();
+        if (!$user_id){
+            return response()->json(["error" => "user_id required"], 400);
+        }
+        $data = [
+            "name" => $request_data->get("name"),
+            "lastname" => $request_data->get("lastname"),
+            "password" => $request_data->get("password"),
+            "email" => $request_data->get("email"),
+        ];
+
+        $verified_data = [];
+        foreach ($data as $key=>$value) {
+            if ($value && $key == "password"){
+                $verified_data[$key] = Hash::make($value);
+            }
+            else if ($value){
+                $verified_data[$key] = $value;
+            }
+        }
+        $client = User::query()->find($user_id);
+        // we only catch the case where the modifier is not an admin and, it's not the
+        // user itself that is trying to make a change
+        if (!$client){
+            return response()->json(["error" => "no client with such id"], 400);
+        }
+
+        if (count($verified_data) > 0){
+            try{
+                $query = $client->newQuery()->where('id', $client->id)->update($verified_data);
+            }catch (\Exception $e){
+                return response()->json(["error" => "can't modify client with this data".$e], 500);
             }
         }
         return response()->json(["msg" => "Client modified successfully"], 200);
@@ -176,7 +240,36 @@ class ClientsController extends Controller
         }
         return response()->json(["msg" => "Client deleted successfully"], 200);
     }
+    
+    public function deleteUser(Request $request): JsonResponse{
+        $request_data = $request->json();
+        $user_id = $request_data->get("user_id");
 
+        if (!$user_id){
+            return response()->json(["error" => "user_id required"], 400);
+        }
+        $client = User::query()->find($user_id);
+        if (!$client){
+            return response()->json(["error" => "no client with such id"], 400);
+        }
+        try{
+            $client->delete();
+        }catch (\Exception $e){
+            return response()->json(["error" => "can't delete a client for some reason"], 400);
+        }
+        return response()->json(["msg" => "Client deleted successfully"], 200);
+    }
+    
+    
+    
+    public function getAllUsers(Request $request): JsonResponse{
+        $session_client_id = auth()->id();
+        $user = User::query()->find($session_client_id);
+        if (!AuthorityCheckers::isAdmin($user)){
+            return response()->json(["error" => "you don't have permission"], 403);
+        }
+        return response()->json(User::all(), 200);
+    }
     public function getAllClients(Request $request): JsonResponse{
         $session_client_id = auth()->id();
         $user = User::query()->find($session_client_id);
