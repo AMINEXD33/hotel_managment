@@ -1,0 +1,188 @@
+#navbar{
+    background-color: #0d0d0f !important;
+    font-family: poppins;
+}
+body{
+    background-color: #0d0d0f;
+    height: 100vh;
+}
+.searchbar{
+    background-image: url(../../../../public/8888.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 50vh;
+    transform: skewY(0deg);
+    z-index: -1;
+    animation: searchbar 1s alternate forwards ease-in-out;
+    position: relative;
+    padding: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+}
+@keyframes searchbar {
+    from{
+        height: 50vh;
+    }to{
+        height: 200px;
+    }
+    
+}
+.filter{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.548);
+    z-index: -1;
+}
+.data_filters{
+    background-color: whitesmoke;
+
+    height: 100px;
+    width: auto;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    animation: data_filters_animation 1s alternate forwards ease-in-out;
+}
+@keyframes data_filters_animation {
+    from{
+        background-color: rgba(245, 245, 245, 0.425);
+    }
+    to{
+        background-color: whitesmoke;
+    }
+    
+}
+.roomsships_container{
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    min-height: 70vh;
+}
+.room_ship{
+    width: 100%;
+    min-height: 250px;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: whitesmoke;
+    position: relative;
+    
+}
+.room_ship:hover {
+    animation: shrink 0.3s alternate forwards ease-in-out;
+}
+@keyframes shrink {
+    from{
+
+    }to{
+        scale: 0.99;
+    }
+    
+}
+.roomphoto{
+    min-height: 250px;
+    height: 100%;
+    width: 400px;
+}
+.roomInfos{
+    color: black;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.dashed_header{
+    position: relative;
+    font-family: poppins;
+}
+.dashed_header::after{
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 20px;
+    height: 1px;
+    background-color: black;
+
+}
+.infos{
+    display: flex;
+    gap: 10px;
+
+}
+.info{
+    border-right: 1px solid rgba(0, 0, 0, 0.26);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.164);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 5px;
+}
+.roomaction{
+    color: black;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: red;
+    width: max-content;
+}
+
+.bookbow{
+    background-color: #0d0d0f;
+    color: white;
+    width: 200px;
+    height: 60px;
+    padding: 20px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+.bookbow:hover{
+    animation: booknow 0.2s alternate forwards ease-in;
+}
+@keyframes booknow {
+    from{
+        transform: translateY(0px);
+    }to{
+        transform: translateY(5px);
+    }
+    
+}
+
+@media screen and (min-width: 200px) and (max-width: 1100px) {
+
+    .searchbar{
+        height: fit-content;
+    
+    }
+    .data_filters{
+        height: auto;
+    }
+    .roomphoto{
+        min-height: 250px;
+        height: 100%;
+        width: 100%;
+    }
+    .infos{
+        flex-wrap: wrap;
+    }
+    .bookbow{
+        position: static;
+        align-self: center;
+    }
+}

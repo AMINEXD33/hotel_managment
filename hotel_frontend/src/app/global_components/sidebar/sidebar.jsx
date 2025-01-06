@@ -49,7 +49,7 @@ export default function SideBar({
                 accounts managment
               </NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link href="#action1">My account</Nav.Link>
+            
 
           </Nav>
           <Form className="d-flex">

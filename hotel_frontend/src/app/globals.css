@@ -2,7 +2,14 @@
   font-family: "exo";
   src: url(./fonts/exo/Exo-Light.otf);
 }
-
+@font-face {
+  font-family: "parata";
+  src: url(./fonts/Prata/Prata-Regular.ttf);
+}
+@font-face {
+  font-family: "poppins";
+  src: url(./fonts/Poppins/Poppins-Light.ttf);
+}
 :root {
   --background: #ffffff;
   --foreground: #ffffff;

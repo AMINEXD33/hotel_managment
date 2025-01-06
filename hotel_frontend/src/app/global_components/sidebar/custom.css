@@ -1,0 +1,14 @@
+
+div #navbar{
+    background-color: #0d0d0f !important;
+    font-family: poppins;
+    height: 100px;
+}
+#navbar a{
+    color: white;
+    border-bottom: 1px solid transparent;
+}
+#navbar a:hover{
+    border-bottom: 1px solid white;
+}
+

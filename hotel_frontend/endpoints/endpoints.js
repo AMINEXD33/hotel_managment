@@ -1,6 +1,7 @@
 export var base = "https://localhost/api";
 export var base2 = "https://localhost/sanctum/csrf-cookie";
 export var photobase = "https://localhost/storage/";
+export var nextPhotoBase = "https://localhost/";
 export var PAYPALCLIENT = "AVHXZ8YVd9JjOuhOrGDuNeWqV7SU5OXO3kADXbkjsSyBVPZsG5WnffbSuqtZzFc8dpUbhhSLNTcnKL6u";
 
 
@@ -69,15 +70,29 @@ export function API_availableYears(){
     return(base.concat("/getAvailableYears"));
 }
 
+export function API_getClientData(){
+    return(base.concat("/getClientData"));
+}
 
-
+export function API_modifyClient(){
+    return(base.concat("/modifyClient"));
+}
 export function API_getHotelsLite(){
     return(base.concat("/getAllHotelsLite"));
 }
 
+export function API_setReservationReview(){
+    return(base.concat("/setReservationReview"));
+}
+export function API_getClientReservations(){
+    return(base.concat("/getClientReservations"));
+}
+
 
 ///// 
-
+export function API_getRoomUserById(){
+    return(base.concat("/getRoomUserById"));
+}
 export function API_getHotels(){
     return(base.concat("/getAllHotels"));
 }
@@ -164,4 +179,8 @@ export function API_deleteUser(){
 }
 export function API_modifyUser(){
     return(base.concat("/modifyUser"));
+}
+
+export function API_reservedRanges(){
+    return(base.concat("/getActiveReservationRanges"));
 }
