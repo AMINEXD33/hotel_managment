@@ -16,6 +16,9 @@ Route::get('/user', function (Request $request) {
 // some function to get reservations
 Route::get('/hotelAliveReservation', [ReservationsController::class, 'getAllReservationsForHotel'])->middleware('auth:sanctum');
 Route::get('/hotelOldReservation', [ReservationsController::class, 'getAllOldReservationsForHotel'])->middleware('auth:sanctum');
+Route::post('/getActiveReservationRanges',  [ReservationsController::class, 'getActiveReservationRanges'])->middleware('auth:sanctum');
+
+
 
 // some function to filter reservation using check_in date aliveReservations + oldReservations
 Route::get('/hotelReservationsCheckinAfter', [ReservationsController::class, 'getAllReservationsWithCheckInAfter'])->middleware('auth:sanctum');
@@ -27,7 +30,8 @@ Route::get('/hotelReservationsCheckinBetween', [ReservationsController::class, '
 Route::get('/hotelReservationsCheckoutAfter', [ReservationsController::class, 'getAllReservationsWithCheckOutAfter'])->middleware('auth:sanctum');
 Route::get('/hotelReservationsCheckoutBefore', [ReservationsController::class, 'getAllReservationsWithCheckOutBefore'])->middleware('auth:sanctum');
 Route::get('/hotelReservationsCheckoutBetween', [ReservationsController::class, 'getAllReservationsWithCheckOutBetween'])->middleware('auth:sanctum');
-
+Route::get('/getClientReservations', [ReservationsController::class, 'getClientReservations'])->middleware('auth:sanctum');
+Route::post('/setReservationReview', [ReservationsController::class, 'setReservationReview'])->middleware('auth:sanctum');
 
 // CRUD  clients
 Route::post('/register', [ClientsController::class, 'createClient']);
@@ -44,6 +48,7 @@ Route::get('/getAllUsers', [ClientsController::class, 'getAllUsers']);
 
 Route::post('/getClientById', [ClientsController::class, 'getClientById']);
 Route::post('/getAdminById', [ClientsController::class, 'getAdminById']);
+Route::get('/getClientData', [ClientsController::class, 'getClientData']);
 
 Route::post('/getClientByEmail', [ClientsController::class, 'getClientByEmail']);
 Route::post('/getAdminByEmail', [ClientsController::class, 'getAdminByEmail']);
@@ -72,6 +77,8 @@ Route::get('/getAllRooms', [RoomsController::class, 'getAllRooms']);
 Route::get('/getRoomById', [RoomsController::class, 'getRoomById']);
 Route::get('/getAllReservedRooms', [RoomsController::class, 'getAllReservedRooms']);
 Route::get('/getAllUnReservedRooms', [RoomsController::class, 'getAllUnReservedRooms']);
+Route::post('/getRoomUserById', [RoomsController::class, 'getRoomUserById']);
+
 
 Route::post('/login', [ClientsController::class, 'login']);
 Route::get('/logout', [ClientsController::class, 'logout']);

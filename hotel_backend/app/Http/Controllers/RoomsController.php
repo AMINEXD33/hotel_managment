@@ -237,6 +237,26 @@ class RoomsController extends Controller
         return response()->json($data, 200);
     }
 
+    public function getRoomUserById(Request $request):JsonResponse{
+        $room_id = $request->json()->get("room_id");
+        if (!$room_id){
+            return response()->json(["error" => "room_id is required"], 404);
+        }
+        $room = Rooms::query()
+            ->join("hotels", "hotels.id", "=", "id_hotel")
+            ->select("rooms.*","hotels.description as hotel_description" ,"hotels.name", "hotels.address", "hotels.phone", "hotels.email", "hotels.city")
+            ->where("rooms.id","=", $room_id)
+            ->first();
+        $data = [];
+        $room_photos = [];
+        $room_photos = Rooms_photos::query()->where('room_id', $room->id)->get();
+        $hotel_photos = HotelsPhotos::query()->where('hotel_id', $room->id_hotel)->get();
+        $tmp = [];
+        $tmp['room'] = $room;
+        $tmp['room_photos'] = $room_photos;
+        $tmp['hotel_photos'] = $hotel_photos;
+        $data[] = $tmp;
 
-
+        return response()->json($data, 200);
+    }
 }

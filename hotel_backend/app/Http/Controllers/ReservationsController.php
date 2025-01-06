@@ -360,4 +360,69 @@ class ReservationsController extends Controller
         Mail::to($customer)->send(new ReservationCanceled($customer, $reservation, $hotel));
         return response()->json(["success" => "Reservation has been cancelled"], 200);
     }
+
+
+    public function getActiveReservationRanges(Request $request): JsonResponse{
+        $id_room = $request->json()->get('id_room');
+        if (!$id_room){
+            return response()->json(["error" => "id_room was not provided"], 404);
+        }
+        $reservation_ranges = Reservations::query()
+            ->join("rooms", "reservations.id_room", "=", "rooms.id")
+            ->where("reservations.id_room",$id_room)
+            ->get(["check_in", "check_out"]);
+        return response()->json($reservation_ranges, 200);
+    }
+
+    public  function getClientReservations(Request $request): JsonResponse{
+        $id_user = auth()->id();
+        if (!$id_user){
+            return response()->json(["error" => "no such user"], 404);
+        }
+        $reservations = Reservations::query()
+            ->join("rooms", "reservations.id_room", "=", "rooms.id")
+            ->join("hotels", "rooms.id_hotel", "=", "hotels.id")
+            ->where("reservations.id_customer",$id_user)
+            ->get(["reservations.id","hotels.name","check_in", "check_out", "check_out_note", "room_stars", "hotel_stars", "total_price"]);
+        return response()->json($reservations, 200);
+    }
+
+    public function setReservationReview(Request $request): JsonResponse{
+        $id_user = auth()->id();
+        if (!$id_user){
+            return response()->json(["error" => "no such user"], 404);
+        }
+        $reservation_id = $request->json()->get('reservation_id');
+        if (!$reservation_id){
+            return response()->json(["error" => "reservation_id was not provided"], 404);
+        }
+        $reservation = Reservations::query()->find($reservation_id);
+        if (!$reservation){
+            return response()->json(["error" => "Reservation not found"], 404);
+        }
+        try{
+            $room_rating =$request->json()->get('room_rating');
+            $hotel_rating =$request->json()->get('hotel_rating');
+            $checkout_note = $request->json()->get('checkout_note');
+
+            if (!$room_rating || !$hotel_rating || !$checkout_note){
+                return response()->json(["error" => "room_rating and hotel_rating and checkout_note are required"], 404);
+            }
+
+            if ($room_rating > 5 || $room_rating < 0){
+                return response()->json(["error" => "room_rating is out of range"], 400);
+            }
+            if ($hotel_rating > 5 || $hotel_rating < 0){
+                return response()->json(["error" => "hotel_rating is out of range"], 400);
+            }
+            $reservation->update([
+                "room_stars"=>$room_rating,
+                "hotel_stars"=>$hotel_rating,
+                "check_out_note"=>$checkout_note,
+            ]);
+        }catch (\Exception $e){
+            return response()->json(["error" => "error while setting reviews", "rrr"=>$e->getMessage()], 500);
+        }
+        return response()->json($reservation, 200);
+    }
 }

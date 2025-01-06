@@ -309,6 +309,21 @@ class ClientsController extends Controller
         return response()->json($client, 200);
     }
 
+    public function getClientData(Request $request): JsonResponse{
+
+        $client_id = auth()->id();
+
+        if (!$client_id){
+            return response()->json(["error" => "client_id required"], 400);
+        }
+        # a client has is_admin false, so even if we search for a valid id and it happens to be an admin
+        # we don't want that result
+        $client = User::query()->where("is_admin", false)->where("id", $client_id)->first();
+        if (!$client){
+            return response()->json(["error" => "no client with such id"], 400);
+        }
+        return response()->json($client, 200);
+    }
     public function getAdminById(Request $request): JsonResponse{
         $check = AuthorityCheckers::isUserAdmin();
         if (!$check){

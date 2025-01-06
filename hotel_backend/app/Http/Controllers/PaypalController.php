@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reservations;
+use App\Models\Rooms;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +16,7 @@ use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use PayPalHttp\HttpException;
 use DateTime;
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 class PayPalController extends Controller
 {
     private $client;
@@ -43,7 +45,6 @@ class PayPalController extends Controller
     public function createOrder(Request $request)
     {
         try {
-            \Log::info('Request data:', $request->all());
             // Validate inputs
             $validated = $request->validate([
                 'amount' => 'required|numeric|min:0',
@@ -52,13 +53,48 @@ class PayPalController extends Controller
                 'id_room' => 'required|exists:rooms,id'  // Assuming you have a rooms table
             ]);
 
-            // Format the amount (PayPal expects strings with 2 decimal places)
-            $formattedAmount = number_format($validated['amount'], 2, '.', '');
-
             // Convert dates to desired format if needed
-            $checkinDate = new DateTime($validated['checkin']);
-            $checkoutDate = new DateTime($validated['checkout']);
+            $checkinDate =  Carbon::parse($validated['checkin'])->startOfDay();
+            $checkoutDate =  Carbon::parse($validated['checkout'])->startOfDay();
+            $total = null;
+            // make sure our dates don't overlap
+            $reservation_ranges = Reservations::query()
+                ->join("rooms", "reservations.id_room", "=", "rooms.id")
+                ->where("reservations.id_room",$validated['id_room'])
+                ->get(["check_in", "check_out"]);
 
+            // room
+            $room = Rooms::query()->find($validated['id_room']);
+            if(!$room){
+                return response()->json(['error' => "we couldn't process your reservation"], 422);
+            }
+            // Parse and normalize ISO dates
+            $existing_check_in = Carbon::parse($checkinDate)->startOfDay();
+            $existing_check_out = Carbon::parse( $checkoutDate)->startOfDay();
+
+            // Validate date range
+            if ($existing_check_out->lt($existing_check_in)) {
+                throw new Exception("Check-out date cannot be before check-in date.");
+            }
+
+            // Calculate total days and cost
+            $totalDays = $existing_check_in->diffInDays($existing_check_out) + 1; // Inclusive
+            $total = $totalDays * $room->price;
+
+            $total = number_format($total, 2, '.', '');
+            // check if the select range doesn't overlap with any other reservation
+            foreach($reservation_ranges as $reservation_range) {
+                $existing_check_in = Carbon::parse($reservation_range->check_in)->startOfDay();
+                $existing_check_out = Carbon::parse($reservation_range->check_out)->startOfDay();
+                if ($checkinDate <= $existing_check_out && $checkoutDate >= $existing_check_in) {
+                    // Overlap detected
+                    return response()->json(['error' => 'The room is not available for the selected dates.'], 422);
+                }
+            }
+            // if no total
+            if (!$total){
+                return response()->json(['error' => "we couldn't process your reservation"], 422);
+            }
             // Create the order data structure that PayPal expects
             $orderData = [
                 "intent" => "CAPTURE",
@@ -66,7 +102,7 @@ class PayPalController extends Controller
                     [
                         "amount" => [
                             "currency_code" => "USD",
-                            "value" => $formattedAmount
+                            "value" => $total
                         ],
                         "description" => "Room booking from " . $checkinDate->format('Y-m-d') .
                                          " to " . $checkoutDate->format('Y-m-d'),
@@ -87,6 +123,7 @@ class PayPalController extends Controller
                 ]
             ];
 
+
             // Create and execute the PayPal order request
             $orderRequest = new OrdersCreateRequest();
             $orderRequest->prefer('return=representation');
@@ -103,7 +140,7 @@ class PayPalController extends Controller
                 "id_room"=> $validated['id_room'],
                 "check_in"=>$checkin,
                 "check_out"=> $checkout,
-                'total'=>$validated['amount'],
+                'total'=>$total,
                 "created_at"=>\Carbon\Carbon::now(),
                 "updated_at"=>\Carbon\Carbon::now()
             ]);

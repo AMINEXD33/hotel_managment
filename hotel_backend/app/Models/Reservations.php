@@ -9,4 +9,9 @@ class Reservations extends Model
 {
     /** @use HasFactory<\Database\Factories\ReservationsFactory> */
     use HasFactory;
+    protected $fillable = [
+        "check_out_note",
+        "room_stars",
+        "hotel_stars"
+    ];
 }

@@ -239,7 +239,7 @@ class HotelsController extends Controller
     }
 
     public function getAllCities(Request $request):JsonResponse{
-        $data = Hotels::all(["city"])->unique(['city']);
+        $data = Hotels::pluck('city')->unique()->values();
         return  response()->json($data, 200);
     }
 
