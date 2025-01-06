@@ -20,7 +20,7 @@ function goToDashboard(router, role){
         router.push("/adminDashboard");
     }else if(role === "user"){
         console.warn("go to user dashboard");
-        router.push("/userDashboard");
+        router.push("/userDashboard/brows");
     }else{
         console.warn("wtf this is the role i got ", role);
     }
