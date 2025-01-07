@@ -16,7 +16,7 @@ Route::get('/user', function (Request $request) {
 // some function to get reservations
 Route::get('/hotelAliveReservation', [ReservationsController::class, 'getAllReservationsForHotel'])->middleware('auth:sanctum');
 Route::get('/hotelOldReservation', [ReservationsController::class, 'getAllOldReservationsForHotel'])->middleware('auth:sanctum');
-Route::post('/getActiveReservationRanges',  [ReservationsController::class, 'getActiveReservationRanges'])->middleware('auth:sanctum');
+Route::post('/getActiveReservationRanges',  [ReservationsController::class, 'getActiveReservationRanges']);
 
 
 

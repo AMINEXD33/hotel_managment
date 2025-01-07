@@ -364,6 +364,7 @@ class ReservationsController extends Controller
 
     public function getActiveReservationRanges(Request $request): JsonResponse{
         $id_room = $request->json()->get('id_room');
+        // try{        
         if (!$id_room){
             return response()->json(["error" => "id_room was not provided"], 404);
         }
@@ -371,6 +372,10 @@ class ReservationsController extends Controller
             ->join("rooms", "reservations.id_room", "=", "rooms.id")
             ->where("reservations.id_room",$id_room)
             ->get(["check_in", "check_out"]);
+        // }catch(\Exception $e){
+        //     return response()->json(["err"=>$e.getMessage()], 200);
+        // }
+
         return response()->json($reservation_ranges, 200);
     }
 

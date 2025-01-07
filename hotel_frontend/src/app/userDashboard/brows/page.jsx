@@ -72,10 +72,14 @@ export default function Brows(){
                                             <p>{val.room.suites}</p>
                                         </div>
                                     </div>
-                                    <p className="dashed_header">Rating</p>
+                                    <p className="dashed_header">Pricing</p>
+                                    <div className="rating">
+                                        {val.room.price}$/night
+                                    </div>
+                                    {/* <p className="dashed_header">Rating</p>
                                     <div className="rating">
                                         <Rating name="half-rating-read" defaultValue={2.5} precision={0.5} readOnly />
-                                    </div>
+                                    </div> */}
                             
                                     <Link prefetch={false}className="bookbow" href={"/userDashboard/booking/"+ val.room.id}>Book Now</Link>
                                 </div>
